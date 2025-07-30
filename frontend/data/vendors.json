@@ -1,0 +1,238 @@
+[
+  {
+    "id": "v1",
+    "slug": "tech-world-store",
+    "businessName": "Tech World Store",
+    "displayName": "TechWorld",
+    "description": "Your one-stop destination for latest smartphones and mobile accessories. We offer genuine products with warranty.",
+    "logo": "/images/vendors/techworld-logo.jpg",
+    "banner": "/images/vendors/techworld-banner.jpg",
+    "rating": 4.5,
+    "reviewCount": 2847,
+    "totalProducts": 156,
+    "totalSales": 8934,
+    "joinedDate": "2023-03-15",
+    "isVerified": true,
+    "categories": ["Mobiles", "Mobile Accessories"],
+    "location": {
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "country": "India"
+    },
+    "contact": {
+      "email": "support@techworld.com",
+      "phone": "+91-9876543210"
+    },
+    "policies": {
+      "returnPolicy": "7 days return policy",
+      "shippingPolicy": "Free shipping on orders above ₹500",
+      "warrantyPolicy": "1 year manufacturer warranty"
+    },
+    "socialLinks": {
+      "website": "https://techworld.com",
+      "facebook": "https://facebook.com/techworld",
+      "instagram": "https://instagram.com/techworld"
+    },
+    "performance": {
+      "responseTime": "2 hours",
+      "shipmentTime": "1-2 days",
+      "customerSatisfaction": 4.5
+    }
+  },
+  {
+    "id": "v2",
+    "slug": "galaxy-electronics",
+    "businessName": "Galaxy Electronics Hub",
+    "displayName": "Galaxy Electronics",
+    "description": "Premium electronics retailer specializing in Samsung products and smart home devices.",
+    "logo": "/images/vendors/galaxy-logo.jpg",
+    "banner": "/images/vendors/galaxy-banner.jpg",
+    "rating": 4.3,
+    "reviewCount": 1923,
+    "totalProducts": 89,
+    "totalSales": 5672,
+    "joinedDate": "2023-06-20",
+    "isVerified": true,
+    "categories": ["Mobiles", "Electronics", "Smart Home"],
+    "location": {
+      "city": "Delhi",
+      "state": "Delhi",
+      "country": "India"
+    },
+    "contact": {
+      "email": "info@galaxyelectronics.com",
+      "phone": "+91-9876543211"
+    },
+    "policies": {
+      "returnPolicy": "10 days return policy",
+      "shippingPolicy": "Free shipping on orders above ₹1000",
+      "warrantyPolicy": "Extended warranty available"
+    },
+    "socialLinks": {
+      "website": "https://galaxyelectronics.com",
+      "twitter": "https://twitter.com/galaxyelectronics"
+    },
+    "performance": {
+      "responseTime": "4 hours",
+      "shipmentTime": "2-3 days",
+      "customerSatisfaction": 4.3
+    }
+  },
+  {
+    "id": "v3",
+    "slug": "apple-authorized-reseller",
+    "businessName": "Apple Authorized Reseller",
+    "displayName": "iStore Official",
+    "description": "Authorized Apple reseller offering genuine Apple products with official warranty and support.",
+    "logo": "/images/vendors/istore-logo.jpg",
+    "banner": "/images/vendors/istore-banner.jpg",
+    "rating": 4.8,
+    "reviewCount": 3456,
+    "totalProducts": 67,
+    "totalSales": 12456,
+    "joinedDate": "2023-01-10",
+    "isVerified": true,
+    "categories": ["Mobiles", "Laptops", "Accessories"],
+    "location": {
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "country": "India"
+    },
+    "contact": {
+      "email": "support@istore.com",
+      "phone": "+91-9876543212"
+    },
+    "policies": {
+      "returnPolicy": "14 days return policy",
+      "shippingPolicy": "Free shipping on all orders",
+      "warrantyPolicy": "Official Apple warranty"
+    },
+    "socialLinks": {
+      "website": "https://istore.com",
+      "facebook": "https://facebook.com/istore",
+      "instagram": "https://instagram.com/istore"
+    },
+    "performance": {
+      "responseTime": "1 hour",
+      "shipmentTime": "1 day",
+      "customerSatisfaction": 4.8
+    }
+  },
+  {
+    "id": "v4",
+    "slug": "audio-paradise",
+    "businessName": "Audio Paradise",
+    "displayName": "Audio Paradise",
+    "description": "Premium audio equipment store featuring headphones, speakers, and audio accessories from top brands.",
+    "logo": "/images/vendors/audio-logo.jpg",
+    "banner": "/images/vendors/audio-banner.jpg",
+    "rating": 4.6,
+    "reviewCount": 1234,
+    "totalProducts": 234,
+    "totalSales": 3456,
+    "joinedDate": "2023-04-05",
+    "isVerified": true,
+    "categories": ["Electronics", "Audio", "Accessories"],
+    "location": {
+      "city": "Pune",
+      "state": "Maharashtra",
+      "country": "India"
+    },
+    "contact": {
+      "email": "hello@audioparadise.com",
+      "phone": "+91-9876543213"
+    },
+    "policies": {
+      "returnPolicy": "15 days return policy",
+      "shippingPolicy": "Free shipping on orders above ₹2000",
+      "warrantyPolicy": "Manufacturer warranty included"
+    },
+    "socialLinks": {
+      "website": "https://audioparadise.com",
+      "youtube": "https://youtube.com/audioparadise"
+    },
+    "performance": {
+      "responseTime": "3 hours",
+      "shipmentTime": "2-4 days",
+      "customerSatisfaction": 4.6
+    }
+  },
+  {
+    "id": "v5",
+    "slug": "sports-zone",
+    "businessName": "Sports Zone India",
+    "displayName": "Sports Zone",
+    "description": "Leading sports and fitness retailer offering authentic sportswear, footwear, and equipment.",
+    "logo": "/images/vendors/sports-logo.jpg",
+    "banner": "/images/vendors/sports-banner.jpg",
+    "rating": 4.4,
+    "reviewCount": 2156,
+    "totalProducts": 567,
+    "totalSales": 7890,
+    "joinedDate": "2023-02-28",
+    "isVerified": true,
+    "categories": ["Fashion", "Sports", "Footwear"],
+    "location": {
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "country": "India"
+    },
+    "contact": {
+      "email": "contact@sportszone.com",
+      "phone": "+91-9876543214"
+    },
+    "policies": {
+      "returnPolicy": "30 days return policy",
+      "shippingPolicy": "Free shipping on orders above ₹1500",
+      "warrantyPolicy": "Brand warranty applicable"
+    },
+    "socialLinks": {
+      "website": "https://sportszone.com",
+      "facebook": "https://facebook.com/sportszone",
+      "instagram": "https://instagram.com/sportszone"
+    },
+    "performance": {
+      "responseTime": "6 hours",
+      "shipmentTime": "3-5 days",
+      "customerSatisfaction": 4.4
+    }
+  },
+  {
+    "id": "v6",
+    "slug": "home-appliances-mart",
+    "businessName": "Home Appliances Mart",
+    "displayName": "Home Mart",
+    "description": "Complete home appliances solution with TVs, refrigerators, washing machines, and kitchen appliances.",
+    "logo": "/images/vendors/homemart-logo.jpg",
+    "banner": "/images/vendors/homemart-banner.jpg",
+    "rating": 4.2,
+    "reviewCount": 1567,
+    "totalProducts": 345,
+    "totalSales": 4567,
+    "joinedDate": "2023-05-12",
+    "isVerified": true,
+    "categories": ["Electronics", "Home Appliances", "Kitchen"],
+    "location": {
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "country": "India"
+    },
+    "contact": {
+      "email": "support@homemart.com",
+      "phone": "+91-9876543215"
+    },
+    "policies": {
+      "returnPolicy": "7 days return policy",
+      "shippingPolicy": "Free installation and delivery",
+      "warrantyPolicy": "Extended warranty options"
+    },
+    "socialLinks": {
+      "website": "https://homemart.com"
+    },
+    "performance": {
+      "responseTime": "8 hours",
+      "shipmentTime": "5-7 days",
+      "customerSatisfaction": 4.2
+    }
+  }
+]

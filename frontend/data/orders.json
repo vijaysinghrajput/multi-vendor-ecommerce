@@ -1,0 +1,318 @@
+[
+  {
+    "id": "ord_001",
+    "orderNumber": "ORD-2024-001234",
+    "userId": "user_001",
+    "status": "delivered",
+    "paymentStatus": "paid",
+    "fulfillmentStatus": "fulfilled",
+    "orderDate": "2024-01-15T10:30:00Z",
+    "deliveredDate": "2024-01-18T14:20:00Z",
+    "items": [
+      {
+        "id": "item_001",
+        "productId": "p1",
+        "productTitle": "Realme 11X 5G",
+        "productImage": "/images/products/realme1.jpg",
+        "vendorId": "v1",
+        "vendorName": "Tech World Store",
+        "quantity": 1,
+        "unitPrice": 14999,
+        "totalPrice": 14999,
+        "status": "delivered"
+      }
+    ],
+    "pricing": {
+      "subtotal": 14999,
+      "shipping": 0,
+      "tax": 2699.82,
+      "discount": 0,
+      "total": 17698.82
+    },
+    "shippingAddress": {
+      "name": "John Doe",
+      "phone": "+91-9876543210",
+      "addressLine1": "123 Main Street",
+      "addressLine2": "Apartment 4B",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400001",
+      "country": "India"
+    },
+    "billingAddress": {
+      "name": "John Doe",
+      "phone": "+91-9876543210",
+      "addressLine1": "123 Main Street",
+      "addressLine2": "Apartment 4B",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400001",
+      "country": "India"
+    },
+    "payment": {
+      "method": "card",
+      "transactionId": "txn_abc123",
+      "gateway": "razorpay"
+    },
+    "tracking": {
+      "trackingNumber": "TRK123456789",
+      "carrier": "BlueDart",
+      "estimatedDelivery": "2024-01-18T18:00:00Z"
+    }
+  },
+  {
+    "id": "ord_002",
+    "orderNumber": "ORD-2024-001235",
+    "userId": "user_002",
+    "status": "shipped",
+    "paymentStatus": "paid",
+    "fulfillmentStatus": "partial",
+    "orderDate": "2024-01-20T15:45:00Z",
+    "shippedDate": "2024-01-22T09:30:00Z",
+    "items": [
+      {
+        "id": "item_002",
+        "productId": "p4",
+        "productTitle": "Sony WH-1000XM5 Wireless Headphones",
+        "productImage": "/images/products/sony-headphones1.jpg",
+        "vendorId": "v4",
+        "vendorName": "Audio Paradise",
+        "quantity": 1,
+        "unitPrice": 29990,
+        "totalPrice": 29990,
+        "status": "shipped"
+      },
+      {
+        "id": "item_003",
+        "productId": "p5",
+        "productTitle": "Nike Air Max 270 Running Shoes",
+        "productImage": "/images/products/nike1.jpg",
+        "vendorId": "v5",
+        "vendorName": "Sports Zone",
+        "quantity": 1,
+        "unitPrice": 12995,
+        "totalPrice": 12995,
+        "status": "processing"
+      }
+    ],
+    "pricing": {
+      "subtotal": 42985,
+      "shipping": 99,
+      "tax": 7737.30,
+      "discount": 2000,
+      "total": 48821.30
+    },
+    "shippingAddress": {
+      "name": "Jane Smith",
+      "phone": "+91-9876543211",
+      "addressLine1": "456 Park Avenue",
+      "addressLine2": "",
+      "city": "Delhi",
+      "state": "Delhi",
+      "pincode": "110001",
+      "country": "India"
+    },
+    "billingAddress": {
+      "name": "Jane Smith",
+      "phone": "+91-9876543211",
+      "addressLine1": "456 Park Avenue",
+      "addressLine2": "",
+      "city": "Delhi",
+      "state": "Delhi",
+      "pincode": "110001",
+      "country": "India"
+    },
+    "payment": {
+      "method": "upi",
+      "transactionId": "txn_def456",
+      "gateway": "payu"
+    },
+    "tracking": {
+      "trackingNumber": "TRK987654321",
+      "carrier": "Delhivery",
+      "estimatedDelivery": "2024-01-25T18:00:00Z"
+    }
+  },
+  {
+    "id": "ord_003",
+    "orderNumber": "ORD-2024-001236",
+    "userId": "user_003",
+    "status": "processing",
+    "paymentStatus": "paid",
+    "fulfillmentStatus": "pending",
+    "orderDate": "2024-01-22T11:15:00Z",
+    "items": [
+      {
+        "id": "item_004",
+        "productId": "p3",
+        "productTitle": "Apple iPhone 15",
+        "productImage": "/images/products/iphone1.jpg",
+        "vendorId": "v3",
+        "vendorName": "iStore Official",
+        "quantity": 1,
+        "unitPrice": 79900,
+        "totalPrice": 79900,
+        "status": "processing"
+      }
+    ],
+    "pricing": {
+      "subtotal": 79900,
+      "shipping": 0,
+      "tax": 14382,
+      "discount": 5000,
+      "total": 89282
+    },
+    "shippingAddress": {
+      "name": "Mike Johnson",
+      "phone": "+91-9876543212",
+      "addressLine1": "789 Tech Park",
+      "addressLine2": "Building A, Floor 5",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "pincode": "560001",
+      "country": "India"
+    },
+    "billingAddress": {
+      "name": "Mike Johnson",
+      "phone": "+91-9876543212",
+      "addressLine1": "789 Tech Park",
+      "addressLine2": "Building A, Floor 5",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "pincode": "560001",
+      "country": "India"
+    },
+    "payment": {
+      "method": "wallet",
+      "transactionId": "txn_ghi789",
+      "gateway": "paytm"
+    },
+    "tracking": {
+      "trackingNumber": null,
+      "carrier": null,
+      "estimatedDelivery": "2024-01-26T18:00:00Z"
+    }
+  },
+  {
+    "id": "ord_004",
+    "orderNumber": "ORD-2024-001237",
+    "userId": "user_004",
+    "status": "cancelled",
+    "paymentStatus": "refunded",
+    "fulfillmentStatus": "cancelled",
+    "orderDate": "2024-01-18T16:20:00Z",
+    "cancelledDate": "2024-01-19T10:30:00Z",
+    "cancellationReason": "Customer requested cancellation",
+    "items": [
+      {
+        "id": "item_005",
+        "productId": "p6",
+        "productTitle": "LG 55\" 4K UHD Smart TV",
+        "productImage": "/images/products/lg-tv1.jpg",
+        "vendorId": "v6",
+        "vendorName": "Home Mart",
+        "quantity": 1,
+        "unitPrice": 45999,
+        "totalPrice": 45999,
+        "status": "cancelled"
+      }
+    ],
+    "pricing": {
+      "subtotal": 45999,
+      "shipping": 500,
+      "tax": 8279.82,
+      "discount": 3000,
+      "total": 51778.82
+    },
+    "shippingAddress": {
+      "name": "Sarah Wilson",
+      "phone": "+91-9876543213",
+      "addressLine1": "321 Garden Street",
+      "addressLine2": "Villa 12",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "pincode": "500001",
+      "country": "India"
+    },
+    "billingAddress": {
+      "name": "Sarah Wilson",
+      "phone": "+91-9876543213",
+      "addressLine1": "321 Garden Street",
+      "addressLine2": "Villa 12",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "pincode": "500001",
+      "country": "India"
+    },
+    "payment": {
+      "method": "netbanking",
+      "transactionId": "txn_jkl012",
+      "gateway": "razorpay"
+    },
+    "tracking": {
+      "trackingNumber": null,
+      "carrier": null,
+      "estimatedDelivery": null
+    }
+  },
+  {
+    "id": "ord_005",
+    "orderNumber": "ORD-2024-001238",
+    "userId": "user_005",
+    "status": "pending",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "pending",
+    "orderDate": "2024-01-23T14:45:00Z",
+    "items": [
+      {
+        "id": "item_006",
+        "productId": "p2",
+        "productTitle": "Samsung Galaxy M34 5G",
+        "productImage": "/images/products/samsung1.jpg",
+        "vendorId": "v2",
+        "vendorName": "Galaxy Electronics",
+        "quantity": 2,
+        "unitPrice": 18999,
+        "totalPrice": 37998,
+        "status": "pending"
+      }
+    ],
+    "pricing": {
+      "subtotal": 37998,
+      "shipping": 99,
+      "tax": 6839.64,
+      "discount": 1000,
+      "total": 43936.64
+    },
+    "shippingAddress": {
+      "name": "David Brown",
+      "phone": "+91-9876543214",
+      "addressLine1": "654 Business District",
+      "addressLine2": "Office Complex B",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "pincode": "411001",
+      "country": "India"
+    },
+    "billingAddress": {
+      "name": "David Brown",
+      "phone": "+91-9876543214",
+      "addressLine1": "654 Business District",
+      "addressLine2": "Office Complex B",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "pincode": "411001",
+      "country": "India"
+    },
+    "payment": {
+      "method": "cod",
+      "transactionId": null,
+      "gateway": null
+    },
+    "tracking": {
+      "trackingNumber": null,
+      "carrier": null,
+      "estimatedDelivery": "2024-01-28T18:00:00Z"
+    }
+  }
+]

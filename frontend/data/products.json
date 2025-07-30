@@ -1,0 +1,234 @@
+[
+  {
+    "id": "p1",
+    "slug": "realme-11x-5g",
+    "title": "Realme 11X 5G",
+    "price": 14999,
+    "originalPrice": 16999,
+    "discount": 12,
+    "category": "Mobiles",
+    "categoryId": "c1",
+    "brand": "Realme",
+    "rating": 4.3,
+    "reviewCount": 1247,
+    "images": [
+      "/images/products/realme1.jpg",
+      "/images/products/realme2.jpg",
+      "/images/products/realme3.jpg"
+    ],
+    "description": "Powerful 5G phone with MediaTek Dimensity 6100+ processor, 50MP AI camera, and 5000mAh battery with 33W fast charging.",
+    "features": [
+      "MediaTek Dimensity 6100+ 5G",
+      "6.72\" FHD+ 90Hz Display",
+      "50MP AI Triple Camera",
+      "5000mAh Battery with 33W Fast Charging",
+      "8GB RAM + 128GB Storage"
+    ],
+    "specifications": {
+      "display": "6.72\" FHD+ 90Hz",
+      "processor": "MediaTek Dimensity 6100+",
+      "ram": "8GB",
+      "storage": "128GB",
+      "camera": "50MP + 2MP + 2MP",
+      "battery": "5000mAh",
+      "os": "Android 13"
+    },
+    "vendorId": "v1",
+    "stock": 45,
+    "isActive": true,
+    "tags": ["5G", "Fast Charging", "AI Camera"],
+    "createdAt": "2024-01-15T10:30:00Z"
+  },
+  {
+    "id": "p2",
+    "slug": "samsung-galaxy-m34",
+    "title": "Samsung Galaxy M34 5G",
+    "price": 18999,
+    "originalPrice": 20999,
+    "discount": 10,
+    "category": "Mobiles",
+    "categoryId": "c1",
+    "brand": "Samsung",
+    "rating": 4.5,
+    "reviewCount": 892,
+    "images": [
+      "/images/products/samsung1.jpg",
+      "/images/products/samsung2.jpg"
+    ],
+    "description": "Samsung Galaxy M34 5G with Exynos 1280 processor, 50MP triple camera setup, and massive 6000mAh battery.",
+    "features": [
+      "Exynos 1280 5G Processor",
+      "6.5\" Super AMOLED Display",
+      "50MP Triple Camera",
+      "6000mAh Battery",
+      "6GB RAM + 128GB Storage"
+    ],
+    "specifications": {
+      "display": "6.5\" Super AMOLED",
+      "processor": "Exynos 1280",
+      "ram": "6GB",
+      "storage": "128GB",
+      "camera": "50MP + 8MP + 2MP",
+      "battery": "6000mAh",
+      "os": "Android 13"
+    },
+    "vendorId": "v2",
+    "stock": 23,
+    "isActive": true,
+    "tags": ["AMOLED", "Long Battery", "5G"],
+    "createdAt": "2024-01-20T14:15:00Z"
+  },
+  {
+    "id": "p3",
+    "slug": "apple-iphone-15",
+    "title": "Apple iPhone 15",
+    "price": 79900,
+    "originalPrice": 79900,
+    "discount": 0,
+    "category": "Mobiles",
+    "categoryId": "c1",
+    "brand": "Apple",
+    "rating": 4.8,
+    "reviewCount": 2156,
+    "images": [
+      "/images/products/iphone1.jpg",
+      "/images/products/iphone2.jpg",
+      "/images/products/iphone3.jpg"
+    ],
+    "description": "iPhone 15 with A16 Bionic chip, 48MP Main camera, and USB-C connectivity.",
+    "features": [
+      "A16 Bionic Chip",
+      "6.1\" Super Retina XDR Display",
+      "48MP Main Camera",
+      "USB-C Connectivity",
+      "128GB Storage"
+    ],
+    "specifications": {
+      "display": "6.1\" Super Retina XDR",
+      "processor": "A16 Bionic",
+      "ram": "6GB",
+      "storage": "128GB",
+      "camera": "48MP + 12MP",
+      "battery": "3349mAh",
+      "os": "iOS 17"
+    },
+    "vendorId": "v3",
+    "stock": 12,
+    "isActive": true,
+    "tags": ["Premium", "iOS", "USB-C"],
+    "createdAt": "2024-02-01T09:00:00Z"
+  },
+  {
+    "id": "p4",
+    "slug": "sony-wh-1000xm5",
+    "title": "Sony WH-1000XM5 Wireless Headphones",
+    "price": 29990,
+    "originalPrice": 34990,
+    "discount": 14,
+    "category": "Electronics",
+    "categoryId": "c2",
+    "brand": "Sony",
+    "rating": 4.6,
+    "reviewCount": 567,
+    "images": [
+      "/images/products/sony-headphones1.jpg",
+      "/images/products/sony-headphones2.jpg"
+    ],
+    "description": "Industry-leading noise canceling headphones with exceptional sound quality and 30-hour battery life.",
+    "features": [
+      "Industry-leading noise canceling",
+      "30-hour battery life",
+      "Quick charge (3 min = 3 hours)",
+      "Multipoint connection",
+      "Touch sensor controls"
+    ],
+    "specifications": {
+      "type": "Over-ear wireless",
+      "battery": "30 hours",
+      "charging": "USB-C",
+      "weight": "250g",
+      "connectivity": "Bluetooth 5.2",
+      "drivers": "30mm"
+    },
+    "vendorId": "v4",
+    "stock": 18,
+    "isActive": true,
+    "tags": ["Noise Canceling", "Wireless", "Premium Audio"],
+    "createdAt": "2024-01-25T11:45:00Z"
+  },
+  {
+    "id": "p5",
+    "slug": "nike-air-max-270",
+    "title": "Nike Air Max 270 Running Shoes",
+    "price": 12995,
+    "originalPrice": 14995,
+    "discount": 13,
+    "category": "Fashion",
+    "categoryId": "c3",
+    "brand": "Nike",
+    "rating": 4.4,
+    "reviewCount": 834,
+    "images": [
+      "/images/products/nike1.jpg",
+      "/images/products/nike2.jpg"
+    ],
+    "description": "Nike Air Max 270 features the largest heel Air unit yet for all-day comfort and style.",
+    "features": [
+      "Max Air heel unit",
+      "Breathable mesh upper",
+      "Foam midsole",
+      "Rubber outsole",
+      "Available in multiple colors"
+    ],
+    "specifications": {
+      "material": "Mesh and synthetic",
+      "sole": "Rubber",
+      "closure": "Lace-up",
+      "heel": "Max Air unit",
+      "sizes": "6-12 UK"
+    },
+    "vendorId": "v5",
+    "stock": 67,
+    "isActive": true,
+    "tags": ["Running", "Comfort", "Lifestyle"],
+    "createdAt": "2024-02-10T16:20:00Z"
+  },
+  {
+    "id": "p6",
+    "slug": "lg-55-inch-4k-tv",
+    "title": "LG 55\" 4K UHD Smart TV",
+    "price": 45999,
+    "originalPrice": 52999,
+    "discount": 13,
+    "category": "Electronics",
+    "categoryId": "c2",
+    "brand": "LG",
+    "rating": 4.3,
+    "reviewCount": 445,
+    "images": [
+      "/images/products/lg-tv1.jpg",
+      "/images/products/lg-tv2.jpg"
+    ],
+    "description": "55-inch 4K UHD Smart TV with webOS, HDR10, and built-in streaming apps.",
+    "features": [
+      "55\" 4K UHD Display",
+      "webOS Smart Platform",
+      "HDR10 Support",
+      "Built-in WiFi",
+      "Multiple HDMI ports"
+    ],
+    "specifications": {
+      "screen": "55\" LED",
+      "resolution": "3840x2160",
+      "os": "webOS",
+      "connectivity": "WiFi, Bluetooth",
+      "ports": "3 HDMI, 2 USB",
+      "audio": "20W speakers"
+    },
+    "vendorId": "v6",
+    "stock": 8,
+    "isActive": true,
+    "tags": ["4K", "Smart TV", "HDR"],
+    "createdAt": "2024-01-30T13:10:00Z"
+  }
+]

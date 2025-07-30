@@ -1,0 +1,276 @@
+[
+  {
+    "id": "c1",
+    "name": "Mobiles",
+    "slug": "mobiles",
+    "description": "Latest smartphones and mobile devices",
+    "image": "/images/categories/mobiles.jpg",
+    "icon": "smartphone",
+    "parentId": null,
+    "level": 1,
+    "sortOrder": 1,
+    "isActive": true,
+    "productCount": 1247,
+    "subcategories": [
+      {
+        "id": "c1a",
+        "name": "Android Phones",
+        "slug": "android-phones",
+        "parentId": "c1",
+        "level": 2,
+        "productCount": 856
+      },
+      {
+        "id": "c1b",
+        "name": "iPhones",
+        "slug": "iphones",
+        "parentId": "c1",
+        "level": 2,
+        "productCount": 234
+      },
+      {
+        "id": "c1c",
+        "name": "Feature Phones",
+        "slug": "feature-phones",
+        "parentId": "c1",
+        "level": 2,
+        "productCount": 157
+      }
+    ]
+  },
+  {
+    "id": "c2",
+    "name": "Electronics",
+    "slug": "electronics",
+    "description": "Consumer electronics and gadgets",
+    "image": "/images/categories/electronics.jpg",
+    "icon": "devices",
+    "parentId": null,
+    "level": 1,
+    "sortOrder": 2,
+    "isActive": true,
+    "productCount": 2156,
+    "subcategories": [
+      {
+        "id": "c2a",
+        "name": "Laptops",
+        "slug": "laptops",
+        "parentId": "c2",
+        "level": 2,
+        "productCount": 567
+      },
+      {
+        "id": "c2b",
+        "name": "Headphones",
+        "slug": "headphones",
+        "parentId": "c2",
+        "level": 2,
+        "productCount": 345
+      },
+      {
+        "id": "c2c",
+        "name": "Televisions",
+        "slug": "televisions",
+        "parentId": "c2",
+        "level": 2,
+        "productCount": 234
+      },
+      {
+        "id": "c2d",
+        "name": "Cameras",
+        "slug": "cameras",
+        "parentId": "c2",
+        "level": 2,
+        "productCount": 189
+      }
+    ]
+  },
+  {
+    "id": "c3",
+    "name": "Fashion",
+    "slug": "fashion",
+    "description": "Clothing, footwear, and accessories",
+    "image": "/images/categories/fashion.jpg",
+    "icon": "checkroom",
+    "parentId": null,
+    "level": 1,
+    "sortOrder": 3,
+    "isActive": true,
+    "productCount": 3456,
+    "subcategories": [
+      {
+        "id": "c3a",
+        "name": "Men's Clothing",
+        "slug": "mens-clothing",
+        "parentId": "c3",
+        "level": 2,
+        "productCount": 1234
+      },
+      {
+        "id": "c3b",
+        "name": "Women's Clothing",
+        "slug": "womens-clothing",
+        "parentId": "c3",
+        "level": 2,
+        "productCount": 1567
+      },
+      {
+        "id": "c3c",
+        "name": "Footwear",
+        "slug": "footwear",
+        "parentId": "c3",
+        "level": 2,
+        "productCount": 456
+      },
+      {
+        "id": "c3d",
+        "name": "Accessories",
+        "slug": "accessories",
+        "parentId": "c3",
+        "level": 2,
+        "productCount": 199
+      }
+    ]
+  },
+  {
+    "id": "c4",
+    "name": "Home & Kitchen",
+    "slug": "home-kitchen",
+    "description": "Home appliances and kitchen essentials",
+    "image": "/images/categories/home-kitchen.jpg",
+    "icon": "home",
+    "parentId": null,
+    "level": 1,
+    "sortOrder": 4,
+    "isActive": true,
+    "productCount": 1890,
+    "subcategories": [
+      {
+        "id": "c4a",
+        "name": "Kitchen Appliances",
+        "slug": "kitchen-appliances",
+        "parentId": "c4",
+        "level": 2,
+        "productCount": 567
+      },
+      {
+        "id": "c4b",
+        "name": "Home Decor",
+        "slug": "home-decor",
+        "parentId": "c4",
+        "level": 2,
+        "productCount": 789
+      },
+      {
+        "id": "c4c",
+        "name": "Furniture",
+        "slug": "furniture",
+        "parentId": "c4",
+        "level": 2,
+        "productCount": 345
+      },
+      {
+        "id": "c4d",
+        "name": "Storage",
+        "slug": "storage",
+        "parentId": "c4",
+        "level": 2,
+        "productCount": 189
+      }
+    ]
+  },
+  {
+    "id": "c5",
+    "name": "Books",
+    "slug": "books",
+    "description": "Books, eBooks, and educational materials",
+    "image": "/images/categories/books.jpg",
+    "icon": "menu_book",
+    "parentId": null,
+    "level": 1,
+    "sortOrder": 5,
+    "isActive": true,
+    "productCount": 2345,
+    "subcategories": [
+      {
+        "id": "c5a",
+        "name": "Fiction",
+        "slug": "fiction",
+        "parentId": "c5",
+        "level": 2,
+        "productCount": 890
+      },
+      {
+        "id": "c5b",
+        "name": "Non-Fiction",
+        "slug": "non-fiction",
+        "parentId": "c5",
+        "level": 2,
+        "productCount": 567
+      },
+      {
+        "id": "c5c",
+        "name": "Educational",
+        "slug": "educational",
+        "parentId": "c5",
+        "level": 2,
+        "productCount": 678
+      },
+      {
+        "id": "c5d",
+        "name": "Children's Books",
+        "slug": "childrens-books",
+        "parentId": "c5",
+        "level": 2,
+        "productCount": 210
+      }
+    ]
+  },
+  {
+    "id": "c6",
+    "name": "Sports & Fitness",
+    "slug": "sports-fitness",
+    "description": "Sports equipment and fitness gear",
+    "image": "/images/categories/sports.jpg",
+    "icon": "fitness_center",
+    "parentId": null,
+    "level": 1,
+    "sortOrder": 6,
+    "isActive": true,
+    "productCount": 1234,
+    "subcategories": [
+      {
+        "id": "c6a",
+        "name": "Fitness Equipment",
+        "slug": "fitness-equipment",
+        "parentId": "c6",
+        "level": 2,
+        "productCount": 345
+      },
+      {
+        "id": "c6b",
+        "name": "Sports Gear",
+        "slug": "sports-gear",
+        "parentId": "c6",
+        "level": 2,
+        "productCount": 456
+      },
+      {
+        "id": "c6c",
+        "name": "Outdoor Recreation",
+        "slug": "outdoor-recreation",
+        "parentId": "c6",
+        "level": 2,
+        "productCount": 289
+      },
+      {
+        "id": "c6d",
+        "name": "Team Sports",
+        "slug": "team-sports",
+        "parentId": "c6",
+        "level": 2,
+        "productCount": 144
+      }
+    ]
+  }
+]
