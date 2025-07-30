@@ -216,7 +216,7 @@ npm run test:cov      # Coverage report
 ```bash
 cd frontend
 npm run test          # Jest tests
-npm run test:watch    # Watch mode
+npm run test:watch    # Watch mode ----
 ```
 
 ## 🚀 Deployment
