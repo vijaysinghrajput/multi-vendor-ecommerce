@@ -480,11 +480,16 @@ async function deploy() {
     
     // Step 3: Navigate to backend directory and pull latest changes
     logStep(3, 'Pulling latest changes from repository');
-    executeSSHCommand(
-      `cd ${clientConfig.backendPath} && git pull origin ${APP_CONFIG.gitBranch}`,
-      'Pull latest changes'
-    );
-    logSuccess('Latest changes pulled');
+    
+    if (process.env.SKIP_GIT_PULL === 'true') {
+      logWarning('Skipping git pull (SKIP_GIT_PULL environment variable is set)');
+    } else {
+      executeSSHCommand(
+        `cd ${clientConfig.backendPath} && git pull origin ${APP_CONFIG.gitBranch}`,
+        'Pull latest changes'
+      );
+      logSuccess('Latest changes pulled');
+    }
     
     // Step 4: Database sync and backup
     syncDatabase();
