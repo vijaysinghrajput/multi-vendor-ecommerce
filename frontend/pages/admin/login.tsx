@@ -88,12 +88,9 @@ const AdminLogin: React.FC = () => {
 
       const data: ApiResponse = await response.json();
 
-      // Handle response structure
-      const responseData = data.data || data;
-      const accessToken = responseData.accessToken || data.accessToken;
-      const user = responseData.user || data.user;
-
-      if (response.ok && accessToken && user) {
+      if (response.ok && data.access_token && data.user) {
+        const accessToken = data.access_token;
+        const user = data.user;
         // Ensure user has correct role
         if (user.role !== 'admin') {
           setError('Invalid credentials. Please use the correct login portal for your account type.');

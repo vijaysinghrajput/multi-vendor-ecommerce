@@ -133,31 +133,48 @@ const AdminOrders: NextPage = () => {
   
   // Enhanced orders data
   const [orders, setOrders] = useState<Order[]>(() => {
-    return ordersData.map(order => {
-      const enhancedItems = order.items.map(item => {
+    return ordersData.map((order: any) => {
+      const enhancedItems = order.items.map((item: any) => {
         const product = productsData.find(p => p.id === item.productId);
         const vendor = vendorsData.find(v => v.id === product?.vendorId);
         return {
-          ...item,
-          productTitle: product?.title || 'Unknown Product',
-          productImage: product?.images?.[0] || '/images/placeholder.jpg',
-          vendorId: product?.vendorId,
-          vendorName: vendor?.name || 'Unknown Vendor'
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.unitPrice,
+          productTitle: item.productTitle || product?.title || 'Unknown Product',
+          productImage: item.productImage || product?.images?.[0] || '/images/placeholder.jpg',
+          vendorId: item.vendorId || product?.vendorId,
+          vendorName: item.vendorName || vendor?.businessName || vendor?.displayName || 'Unknown Vendor'
         };
       });
       
       return {
-        ...order,
+        id: order.id,
+        userId: order.userId,
         items: enhancedItems,
+        total: order.pricing?.total || 0,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        paymentMethod: order.payment?.method || 'card',
+        shippingAddress: {
+          name: order.shippingAddress.name,
+          phone: order.shippingAddress.phone,
+          address: order.shippingAddress.addressLine1 + (order.shippingAddress.addressLine2 ? ', ' + order.shippingAddress.addressLine2 : ''),
+          city: order.shippingAddress.city,
+          state: order.shippingAddress.state,
+          pincode: order.shippingAddress.pincode
+        },
+        createdAt: order.orderDate,
+        updatedAt: order.orderDate,
         customerName: order.shippingAddress.name,
         customerEmail: `customer${order.userId}@example.com`,
         customerPhone: order.shippingAddress.phone,
-        subtotal: order.total * 0.85,
-        shippingFee: order.total > 500 ? 0 : 50,
-        tax: order.total * 0.12,
-        discount: order.total * 0.03,
-        trackingNumber: order.status === 'shipped' || order.status === 'delivered' ? `TRK${order.id.toUpperCase()}` : undefined,
-        deliveryDate: order.status === 'delivered' ? new Date(new Date(order.createdAt).getTime() + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString() : undefined
+        subtotal: order.pricing?.subtotal || 0,
+        shippingFee: order.pricing?.shipping || 0,
+        tax: order.pricing?.tax || 0,
+        discount: order.pricing?.discount || 0,
+        trackingNumber: order.tracking?.trackingNumber || (order.status === 'shipped' || order.status === 'delivered' ? `TRK${order.id.toUpperCase()}` : undefined),
+        deliveryDate: order.deliveredDate || (order.status === 'delivered' ? new Date(new Date(order.orderDate).getTime() + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString() : undefined)
       };
     });
   });
@@ -197,11 +214,11 @@ const AdminOrders: NextPage = () => {
   const filteredOrders = useMemo(() => {
     let filtered = orders.filter(order => {
       const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           order.customerPhone.includes(searchTerm) ||
+                           order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           order.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           order.customerPhone?.includes(searchTerm) ||
                            order.trackingNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           order.items.some(item => item.productTitle.toLowerCase().includes(searchTerm.toLowerCase()));
+                           order.items.some(item => item.productTitle?.toLowerCase().includes(searchTerm.toLowerCase()));
       
       const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
       const matchesPaymentStatus = paymentStatusFilter === 'all' || order.paymentStatus === paymentStatusFilter;
@@ -237,10 +254,14 @@ const AdminOrders: NextPage = () => {
         bValue = new Date(bValue as string).getTime();
       }
       
-      if (typeof aValue === 'string') {
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
         aValue = aValue.toLowerCase();
-        bValue = (bValue as string).toLowerCase();
+        bValue = bValue.toLowerCase();
       }
+      
+      // Handle undefined values
+      if (aValue === undefined) aValue = '';
+      if (bValue === undefined) bValue = '';
       
       if (sortOrder === 'asc') {
         return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;

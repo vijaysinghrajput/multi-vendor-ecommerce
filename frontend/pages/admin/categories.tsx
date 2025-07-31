@@ -108,8 +108,8 @@ interface Category {
   isActive: boolean;
   sortOrder: number;
   productCount?: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   children?: Category[];
 }
 
@@ -126,15 +126,16 @@ const AdminCategories: NextPage = () => {
         productCount,
         isActive: category.isActive !== false,
         sortOrder: category.sortOrder || 0,
-        createdAt: category.createdAt || new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: category.updatedAt || new Date().toISOString(),
-        color: category.color || ['#1976d2', '#388e3c', '#f57c00', '#d32f2f', '#7b1fa2', '#0288d1'][Math.floor(Math.random() * 6)]
+        parentId: (category as any).parentId || undefined,
+        createdAt: (category as any).createdAt || new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: (category as any).updatedAt || new Date().toISOString(),
+        color: (category as any).color || ['#1976d2', '#388e3c', '#f57c00', '#d32f2f', '#7b1fa2', '#0288d1'][Math.floor(Math.random() * 6)]
       };
     });
     
     // Build hierarchy
     const buildHierarchy = (cats: Category[]): Category[] => {
-      const categoryMap = new Map(cats.map(cat => [cat.id, { ...cat, children: [] }]));
+      const categoryMap = new Map<string, Category>(cats.map(cat => [cat.id, { ...cat, children: [] }]));
       const rootCategories: Category[] = [];
       
       cats.forEach(cat => {
@@ -211,6 +212,10 @@ const AdminCategories: NextPage = () => {
     filtered.sort((a, b) => {
       let aValue = a[sortBy as keyof Category];
       let bValue = b[sortBy as keyof Category];
+      
+      // Handle undefined values
+      if (aValue === undefined) aValue = '';
+      if (bValue === undefined) bValue = '';
       
       if (typeof aValue === 'string') {
         aValue = aValue.toLowerCase();
@@ -424,9 +429,8 @@ const AdminCategories: NextPage = () => {
       <Card key={category.id} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ position: 'relative' }}>
           <CardMedia
-            component="div"
-            height="120"
             sx={{
+              height: 120,
               bgcolor: category.color,
               display: 'flex',
               alignItems: 'center',
@@ -672,7 +676,7 @@ const AdminCategories: NextPage = () => {
               defaultCollapseIcon={<KeyboardArrowDown />}
               defaultExpandIcon={<KeyboardArrowRight />}
               expanded={expandedNodes}
-              onNodeToggle={(event, nodeIds) => setExpandedNodes(nodeIds)}
+              onNodeToggle={(event: React.SyntheticEvent, nodeIds: string[]) => setExpandedNodes(nodeIds)}
             >
               {categories.map(category => renderTreeItem(category))}
             </TreeView>
@@ -770,7 +774,7 @@ const AdminCategories: NextPage = () => {
                         </TableCell>
                         <TableCell>
                           <Typography variant="body2">
-                            {new Date(category.createdAt).toLocaleDateString()}
+                            {category.createdAt ? new Date(category.createdAt).toLocaleDateString() : 'N/A'}
                           </Typography>
                         </TableCell>
                         <TableCell align="right">
@@ -1097,10 +1101,10 @@ const AdminCategories: NextPage = () => {
                     Timestamps
                   </Typography>
                   <Typography variant="body2" sx={{ mb: 1 }}>
-                    <strong>Created:</strong> {new Date(selectedCategory.createdAt).toLocaleString()}
+                    <strong>Created:</strong> {selectedCategory.createdAt ? new Date(selectedCategory.createdAt).toLocaleString() : 'N/A'}
                   </Typography>
                   <Typography variant="body2">
-                    <strong>Updated:</strong> {new Date(selectedCategory.updatedAt).toLocaleString()}
+                    <strong>Updated:</strong> {selectedCategory.updatedAt ? new Date(selectedCategory.updatedAt).toLocaleString() : 'N/A'}
                   </Typography>
                 </Grid>
               </Grid>

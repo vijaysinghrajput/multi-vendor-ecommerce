@@ -22,7 +22,7 @@ interface LayoutProps {
   fullWidth?: boolean;
 }
 
-const Layout = ({
+const Layout: React.FC<LayoutProps> = ({
   children,
   showSidebar = false,
   showFooter = true,

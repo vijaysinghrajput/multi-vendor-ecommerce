@@ -80,7 +80,7 @@ import {
   Verified,
   Report
 } from '@mui/icons-material';
-import { Layout } from '../../components/Layout';
+import Layout from '../../components/Layout';
 import productsData from '../../data/products.json';
 import vendorsData from '../../data/vendors.json';
 import categoriesData from '../../data/categories.json';
@@ -122,16 +122,19 @@ const AdminProducts: NextPage = () => {
       const vendor = vendorsData.find(v => v.id === product.vendorId);
       return {
         ...product,
-        vendorName: vendor?.name || 'Unknown Vendor',
+        specifications: product.specifications ? Object.fromEntries(
+          Object.entries(product.specifications).filter(([_, value]) => value !== undefined)
+        ) : {},
+        vendorName: vendor?.businessName || vendor?.displayName || 'Unknown Vendor',
         vendorRating: vendor?.rating || 0,
         status: product.isActive !== false ? 'active' : ['pending', 'rejected'][Math.floor(Math.random() * 2)] as any,
         rating: product.rating || 4 + Math.random(),
         reviewCount: product.reviewCount || Math.floor(Math.random() * 500) + 10,
-        inStock: product.inStock !== false,
-        stockQuantity: product.stockQuantity || Math.floor(Math.random() * 100) + 1,
+        inStock: (product.stock || 0) > 0,
+        stockQuantity: product.stock || Math.floor(Math.random() * 100) + 1,
         discount: product.discount || (product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0),
         createdAt: product.createdAt || new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: product.updatedAt || new Date().toISOString()
+        updatedAt: new Date().toISOString()
       };
     });
   });
@@ -180,11 +183,11 @@ const AdminProducts: NextPage = () => {
       const matchesVendor = vendorFilter === 'all' || product.vendorName === vendorFilter;
       const matchesStatus = statusFilter === 'all' || product.status === statusFilter;
       const matchesStock = stockFilter === 'all' || 
-                          (stockFilter === 'inStock' && product.inStock && product.stockQuantity > 0) ||
-                          (stockFilter === 'outOfStock' && (!product.inStock || product.stockQuantity === 0)) ||
-                          (stockFilter === 'lowStock' && product.inStock && product.stockQuantity <= 10);
+                          (stockFilter === 'inStock' && product.inStock && (product.stockQuantity || 0) > 0) ||
+                          (stockFilter === 'outOfStock' && (!product.inStock || (product.stockQuantity || 0) === 0)) ||
+                          (stockFilter === 'lowStock' && product.inStock && (product.stockQuantity || 0) <= 10);
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
-      const matchesRating = product.rating >= ratingFilter;
+      const matchesRating = (product.rating || 0) >= ratingFilter;
       
       return matchesSearch && matchesCategory && matchesVendor && matchesStatus && matchesStock && matchesPrice && matchesRating;
     });
@@ -194,10 +197,14 @@ const AdminProducts: NextPage = () => {
       let aValue = a[sortBy as keyof ProductWithVendor];
       let bValue = b[sortBy as keyof ProductWithVendor];
       
-      if (typeof aValue === 'string') {
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
         aValue = aValue.toLowerCase();
-        bValue = (bValue as string).toLowerCase();
+        bValue = bValue.toLowerCase();
       }
+      
+      // Handle undefined values
+      if (aValue === undefined) aValue = '';
+      if (bValue === undefined) bValue = '';
       
       if (sortOrder === 'asc') {
         return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
@@ -245,8 +252,8 @@ const AdminProducts: NextPage = () => {
   };
   
   const getStockStatus = (product: ProductWithVendor) => {
-    if (!product.inStock || product.stockQuantity === 0) return { label: 'Out of Stock', color: 'error' };
-    if (product.stockQuantity <= 10) return { label: 'Low Stock', color: 'warning' };
+    if (!product.inStock || (product.stockQuantity || 0) === 0) return { label: 'Out of Stock', color: 'error' };
+    if ((product.stockQuantity || 0) <= 10) return { label: 'Low Stock', color: 'warning' };
     return { label: 'In Stock', color: 'success' };
   };
   
@@ -284,7 +291,7 @@ const AdminProducts: NextPage = () => {
             alt={product.title}
             sx={{ objectFit: 'cover' }}
           />
-          {product.discount > 0 && (
+          {(product.discount || 0) > 0 && (
             <Chip
               label={`${product.discount}% OFF`}
               color="error"
@@ -671,7 +678,7 @@ const AdminProducts: NextPage = () => {
                           </TableCell>
                           <TableCell>
                             <Typography variant="body2">
-                              {new Date(product.createdAt).toLocaleDateString()}
+                              {product.createdAt ? new Date(product.createdAt).toLocaleDateString() : 'N/A'}
                             </Typography>
                           </TableCell>
                           <TableCell align="right">
