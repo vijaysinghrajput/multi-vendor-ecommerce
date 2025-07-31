@@ -21,7 +21,7 @@ const MobileBottomNav = () => {
   const theme = useTheme();
   const router = useRouter();
   
-  const { cartItems } = useSelector((state: RootState) => state.cart);
+  const { items: cartItems } = useSelector((state: RootState) => state.cart);
   const { items: wishlistItems } = useSelector((state: RootState) => state.wishlist);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   
