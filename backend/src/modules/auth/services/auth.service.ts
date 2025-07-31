@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
-import { User, UserStatus } from '../../users/entities/user.entity';
+import { User, UserStatus, UserRole } from '../../users/entities/user.entity';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 
@@ -88,6 +88,7 @@ export class AuthService {
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    
     if (!isPasswordValid) {
       // Increment login attempts
       await this.handleFailedLogin(user);
@@ -120,6 +121,70 @@ export class AuthService {
         role: user.role,
       },
       ...tokens,
+    };
+  }
+
+  async adminLogin(loginDto: LoginDto) {
+    const { email, password } = loginDto;
+
+    // Find user with password
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'email', 'password', 'firstName', 'lastName', 'role', 'status', 'loginAttempts', 'lockedUntil'],
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Check if user has admin role
+    if (user.role !== UserRole.ADMIN && user.role !== UserRole.SUPER_ADMIN) {
+      throw new UnauthorizedException('Access denied. Admin privileges required.');
+    }
+
+    // Check if account is locked
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      throw new UnauthorizedException('Account is temporarily locked. Please try again later.');
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+    if (!isPasswordValid) {
+      // Increment login attempts
+      await this.handleFailedLogin(user);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Check if user is active
+    if (user.status !== UserStatus.ACTIVE) {
+      throw new UnauthorizedException('Account is not active.');
+    }
+
+    // Reset login attempts and update last login
+    user.resetLoginAttempts();
+    user.updateLastLogin();
+    await this.userRepository.save(user);
+
+    // Generate tokens
+    const tokens = await this.generateTokens(user);
+
+    // Save refresh token
+    user.refreshToken = tokens.refreshToken;
+    await this.userRepository.save(user);
+
+    return {
+      success: true,
+      message: 'Admin login successful',
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      },
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     };
   }
 

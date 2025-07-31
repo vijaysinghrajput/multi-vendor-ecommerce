@@ -16,7 +16,12 @@ import {
   useTheme,
   useMediaQuery,
   Grid,
-  Paper
+  Paper,
+  Tab,
+  Tabs,
+  CircularProgress,
+  ToggleButton,
+  ToggleButtonGroup
 } from '@mui/material';
 import {
   Phone,
@@ -26,13 +31,15 @@ import {
   Facebook,
   Security,
   CheckCircle,
-  ArrowBack
+  ArrowBack,
+  Email
 } from '@mui/icons-material';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-type AuthStep = 'phone' | 'otp' | 'profile';
+type AuthStep = 'phone' | 'otp' | 'profile' | 'email';
+type CustomerLoginMethod = 'phone' | 'email';
 
 const LoginPage: NextPage = () => {
   const theme = useTheme();
@@ -40,12 +47,15 @@ const LoginPage: NextPage = () => {
   const router = useRouter();
 
   const [authStep, setAuthStep] = useState<AuthStep>('phone');
+  const [customerLoginMethod, setCustomerLoginMethod] = useState<CustomerLoginMethod>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
   const [isNewUser, setIsNewUser] = useState(false);
+  
+
   
   // Profile form for new users
   const [profile, setProfile] = useState({
@@ -57,6 +67,13 @@ const LoginPage: NextPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Email/Password login state for customers
+  const [customerCredentials, setCustomerCredentials] = useState({
+    email: '',
+    password: ''
+  });
+  const [showCustomerPassword, setShowCustomerPassword] = useState(false);
 
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,22 +134,45 @@ const LoginPage: NextPage = () => {
     setIsLoading(true);
     setError('');
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Call OTP verification API
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/verify-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: `+91${phoneNumber}`,
+          otp: otpValue,
+        }),
+      });
       
-      // Simulate OTP verification
-      if (otpValue === '123456') {
-        if (isNewUser) {
+      const data = await response.json();
+      
+      if (response.ok) {
+        if (data.isNewUser) {
+          setIsNewUser(true);
           setAuthStep('profile');
         } else {
-          // Redirect to dashboard or previous page
-          router.push('/');
+          // Store user data and redirect to customer dashboard
+          localStorage.setItem('userToken', data.access_token);
+          localStorage.setItem('userData', JSON.stringify({
+            ...data.user,
+            role: 'user'
+          }));
+          
+          // Redirect to customer dashboard
+          router.push('/user/dashboard');
         }
       } else {
-        setError('Invalid OTP. Please try again.');
+        setError(data.message || 'Invalid OTP. Please try again.');
       }
-    }, 1500);
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      setError('Network error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
@@ -151,11 +191,43 @@ const LoginPage: NextPage = () => {
     setIsLoading(true);
     setError('');
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Call user registration API
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/complete-registration`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: `+91${phoneNumber}`,
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          email: profile.email,
+          password: profile.password,
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Store user data and redirect to customer dashboard
+        localStorage.setItem('userToken', data.access_token);
+        localStorage.setItem('userData', JSON.stringify({
+          ...data.user,
+          role: 'user'
+        }));
+        
+        // Redirect to customer dashboard
+        router.push('/user/dashboard');
+      } else {
+        setError(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setError('Network error. Please try again.');
+    } finally {
       setIsLoading(false);
-      router.push('/');
-    }, 1500);
+    }
   };
 
   const handleResendOtp = () => {
@@ -174,10 +246,68 @@ const LoginPage: NextPage = () => {
     }, 1000);
   };
 
-  const handleSocialLogin = (provider: string) => {
-    // Simulate social login
-    console.log(`Login with ${provider}`);
+  const handleSocialLogin = async (provider: string) => {
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      // Redirect to social login endpoint
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/social/${provider}?redirect=${encodeURIComponent(window.location.origin + '/auth/callback')}`;
+    } catch (error) {
+      console.error(`${provider} login error:`, error);
+      setError(`${provider} login failed. Please try again.`);
+      setIsLoading(false);
+    }
   };
+
+  const handleCustomerEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!customerCredentials.email || !customerCredentials.password) {
+      setError('Please enter both email and password');
+      return;
+    }
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      // Call customer login API
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: customerCredentials.email,
+          password: customerCredentials.password,
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Store user data and redirect to customer dashboard
+        localStorage.setItem('userToken', data.access_token);
+        localStorage.setItem('userData', JSON.stringify({
+          ...data.user,
+          role: 'user'
+        }));
+        
+        // Redirect to customer dashboard
+        router.push('/user/dashboard');
+      } else {
+        setError(data.message || 'Login failed. Please check your credentials.');
+      }
+    } catch (error) {
+      console.error('Customer login error:', error);
+      setError('Network error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
 
   const renderPhoneStep = () => (
     <Card sx={{ maxWidth: 400, mx: 'auto' }}>
@@ -190,6 +320,40 @@ const LoginPage: NextPage = () => {
           <Typography variant="body1" color="text.secondary">
             Enter your phone number to continue
           </Typography>
+        </Box>
+
+        <Box sx={{ mb: 3 }}>
+          <Tabs
+            value={customerLoginMethod}
+            onChange={(e, newValue) => {
+              if (newValue) {
+                setCustomerLoginMethod(newValue);
+                if (newValue === 'email') {
+                  setAuthStep('email');
+                }
+              }
+            }}
+            centered
+            sx={{
+              '& .MuiTab-root': {
+                textTransform: 'none',
+                fontSize: '0.9rem'
+              }
+            }}
+          >
+            <Tab
+              label="Phone"
+              value="phone"
+              icon={<Phone />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Email"
+              value="email"
+              icon={<Email />}
+              iconPosition="start"
+            />
+          </Tabs>
         </Box>
 
         <form onSubmit={handlePhoneSubmit}>
@@ -338,6 +502,149 @@ const LoginPage: NextPage = () => {
     </Card>
   );
 
+
+
+  const renderCustomerEmailLogin = () => (
+    <Card sx={{ maxWidth: 400, mx: 'auto' }}>
+      <CardContent sx={{ p: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: 3 }}>
+          <Email sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
+            Welcome Back
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Sign in with your email and password
+          </Typography>
+        </Box>
+
+        <Box sx={{ mb: 3 }}>
+          <Tabs
+            value={customerLoginMethod}
+            onChange={(e, newValue) => {
+              if (newValue) {
+                setCustomerLoginMethod(newValue);
+                if (newValue === 'phone') {
+                  setAuthStep('phone');
+                }
+              }
+            }}
+            centered
+            sx={{
+              '& .MuiTab-root': {
+                textTransform: 'none',
+                fontSize: '0.9rem'
+              }
+            }}
+          >
+            <Tab
+              label="Phone"
+              value="phone"
+              icon={<Phone />}
+              iconPosition="start"
+            />
+            <Tab
+              label="Email"
+              value="email"
+              icon={<Email />}
+              iconPosition="start"
+            />
+          </Tabs>
+        </Box>
+
+        <form onSubmit={handleCustomerEmailLogin}>
+          <TextField
+            fullWidth
+            label="Email Address"
+            type="email"
+            value={customerCredentials.email}
+            onChange={(e) => setCustomerCredentials({ ...customerCredentials, email: e.target.value })}
+            placeholder="Enter your email"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Email />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 2 }}
+            required
+          />
+          
+          <TextField
+            fullWidth
+            label="Password"
+            type={showCustomerPassword ? 'text' : 'password'}
+            value={customerCredentials.password}
+            onChange={(e) => setCustomerCredentials({ ...customerCredentials, password: e.target.value })}
+            placeholder="Enter your password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowCustomerPassword(!showCustomerPassword)}
+                    edge="end"
+                  >
+                    {showCustomerPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 2 }}
+            required
+          />
+          
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            size="large"
+            disabled={isLoading}
+            sx={{ mb: 3 }}
+          >
+            {isLoading ? 'Signing In...' : 'Sign In'}
+          </Button>
+        </form>
+
+        <Divider sx={{ mb: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            OR
+          </Typography>
+        </Divider>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Button
+            variant="outlined"
+            fullWidth
+            startIcon={<Google />}
+            onClick={() => handleSocialLogin('google')}
+            sx={{ textTransform: 'none' }}
+          >
+            Continue with Google
+          </Button>
+          <Button
+            variant="outlined"
+            fullWidth
+            startIcon={<Facebook />}
+            onClick={() => handleSocialLogin('facebook')}
+            sx={{ textTransform: 'none' }}
+          >
+            Continue with Facebook
+          </Button>
+        </Box>
+
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 3 }}>
+          Don't have an account? Use phone login to register
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+
   const renderProfileStep = () => (
     <Card sx={{ maxWidth: 500, mx: 'auto' }}>
       <CardContent sx={{ p: 4 }}>
@@ -481,8 +788,23 @@ const LoginPage: NextPage = () => {
             </Link>
           </Box>
 
+          {/* Customer Login Header */}
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                color: 'white',
+                fontWeight: 'medium',
+                textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+              }}
+            >
+              Customer Login
+            </Typography>
+          </Box>
+
           {/* Auth Steps */}
-          {authStep === 'phone' && renderPhoneStep()}
+          {authStep === 'phone' && customerLoginMethod === 'phone' && renderPhoneStep()}
+          {authStep === 'email' && customerLoginMethod === 'email' && renderCustomerEmailLogin()}
           {authStep === 'otp' && renderOtpStep()}
           {authStep === 'profile' && renderProfileStep()}
 

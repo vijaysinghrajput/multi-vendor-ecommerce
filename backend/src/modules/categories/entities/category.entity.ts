@@ -16,6 +16,11 @@ export enum CategoryStatus {
   INACTIVE = 'inactive',
 }
 
+export enum CommissionType {
+  FLAT = 'flat',
+  PERCENTAGE = 'percentage',
+}
+
 @Entity('categories')
 export class Category {
   @ApiProperty({ description: 'Category ID' })
@@ -34,17 +39,11 @@ export class Category {
   @Column('text', { nullable: true })
   description?: string;
 
-  @ApiProperty({ description: 'Category image URL', required: false })
-  @Column({ nullable: true })
-  image?: string;
+
 
   @ApiProperty({ description: 'Category icon', required: false })
   @Column({ nullable: true })
   icon?: string;
-
-  @ApiProperty({ description: 'Category status', enum: CategoryStatus })
-  @Column({ type: 'enum', enum: CategoryStatus, default: CategoryStatus.ACTIVE })
-  status: CategoryStatus;
 
   @ApiProperty({ description: 'Display order' })
   @Column({ default: 0 })
@@ -53,6 +52,30 @@ export class Category {
   @ApiProperty({ description: 'Parent category ID', required: false })
   @Column({ nullable: true })
   parentId?: string;
+
+  @ApiProperty({ description: 'Category level in hierarchy' })
+  @Column({ default: 1 })
+  level: number;
+
+  @ApiProperty({ description: 'Category image URL', required: false })
+  @Column({ nullable: true })
+  imageUrl?: string;
+
+  @ApiProperty({ description: 'Commission type', enum: CommissionType })
+  @Column({ type: 'enum', enum: CommissionType, default: CommissionType.PERCENTAGE })
+  commissionType: CommissionType;
+
+  @ApiProperty({ description: 'Commission value' })
+  @Column('decimal', { precision: 10, scale: 2, default: 0 })
+  commissionValue: number;
+
+  @ApiProperty({ description: 'Is featured category' })
+  @Column({ default: false })
+  isFeatured: boolean;
+
+  @ApiProperty({ description: 'Is active category' })
+  @Column({ default: true })
+  isActive: boolean;
 
   @ApiProperty({ description: 'SEO meta title', required: false })
   @Column({ nullable: true })
@@ -89,11 +112,6 @@ export class Category {
   children: Category[];
 
   // Virtual properties
-  @ApiProperty({ description: 'Is category active' })
-  get isActive(): boolean {
-    return this.status === CategoryStatus.ACTIVE;
-  }
-
   @ApiProperty({ description: 'Is root category' })
   get isRoot(): boolean {
     return !this.parentId;
@@ -102,5 +120,11 @@ export class Category {
   @ApiProperty({ description: 'Has children' })
   get hasChildren(): boolean {
     return this.children && this.children.length > 0;
+  }
+
+  @ApiProperty({ description: 'Full category path' })
+  get fullPath(): string {
+    // This would be populated by service logic
+    return this.name;
   }
 }

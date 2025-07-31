@@ -33,6 +33,15 @@ import { RootState } from '../../store';
 import { toggleSidebar, setTheme } from '../../store/slices/uiSlice';
 import { logout } from '../../store/slices/authSlice';
 
+interface CartItem {
+  id: string;
+  quantity: number;
+}
+
+interface WishlistItem {
+  id: string;
+}
+
 const Header = () => {
   const theme = useTheme();
   const router = useRouter();
@@ -40,14 +49,18 @@ const Header = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const { cartItems } = useSelector((state: RootState) => state.cart);
-  const { items: wishlistItems } = useSelector((state: RootState) => state.wishlist);
+  const cartState = useSelector((state: RootState) => state.cart);
+  const wishlistState = useSelector((state: RootState) => state.wishlist);
   const { theme: currentTheme } = useSelector((state: RootState) => state.ui);
   
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchValue, setSearchValue] = useState('');
   
-  const cartItemsCount = cartItems?.reduce((total, item) => total + item.quantity, 0) || 0;
+  // Safely access cart items with proper typing
+  const cartItems = (cartState as any)?.items || (cartState as any)?.cartItems || [];
+  const wishlistItems = (wishlistState as any)?.items || [];
+  
+  const cartItemsCount = cartItems?.reduce((total: number, item: CartItem) => total + item.quantity, 0) || 0;
   const wishlistItemsCount = wishlistItems?.length || 0;
   
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -59,7 +72,7 @@ const Header = () => {
   };
   
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logout() as any);
     handleMenuClose();
     router.push('/');
   };
@@ -106,7 +119,6 @@ const Header = () => {
           {/* Logo */}
           <Link href="/" passHref>
             <Box
-              component="a"
               sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -210,10 +222,9 @@ const Header = () => {
           )}
 
           {/* Wishlist */}
-          <IconButton
+          <IconButton 
             color="inherit"
-            component={Link}
-            href="/wishlist"
+            onClick={() => router.push('/wishlist')}
           >
             <Badge badgeContent={wishlistItemsCount} color="error">
               <WishlistIcon />
@@ -221,10 +232,9 @@ const Header = () => {
           </IconButton>
 
           {/* Cart */}
-          <IconButton
+          <IconButton 
             color="inherit"
-            component={Link}
-            href="/cart"
+            onClick={() => router.push('/cart')}
           >
             <Badge badgeContent={cartItemsCount} color="error">
               <CartIcon />
@@ -249,11 +259,11 @@ const Header = () => {
                 sx={{ p: 0.5 }}
               >
                 <Avatar
-                  src={user?.avatar}
-                  alt={user?.name}
+                  src={(user as any)?.avatar}
+                  alt={(user as any)?.firstName || (user as any)?.email}
                   sx={{ width: 32, height: 32 }}
                 >
-                  {user?.name?.charAt(0).toUpperCase()}
+                  {((user as any)?.firstName || (user as any)?.email)?.charAt(0).toUpperCase()}
                 </Avatar>
               </IconButton>
               <Menu
@@ -290,13 +300,13 @@ const Header = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
-                <MenuItem component={Link} href="/profile">
+                <MenuItem onClick={() => router.push('/profile')}>
                   <Avatar /> Profile
                 </MenuItem>
-                <MenuItem component={Link} href="/orders">
+                <MenuItem onClick={() => router.push('/orders')}>
                   My Orders
                 </MenuItem>
-                <MenuItem component={Link} href="/settings">
+                <MenuItem onClick={() => router.push('/settings')}>
                   Settings
                 </MenuItem>
                 <Divider />
@@ -309,18 +319,16 @@ const Header = () => {
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Button
                 color="inherit"
-                component={Link}
-                href="/auth/login"
                 size="small"
+                onClick={() => router.push('/login')}
               >
                 Login
               </Button>
               <Button
                 variant="outlined"
                 color="inherit"
-                component={Link}
-                href="/auth/register"
                 size="small"
+                onClick={() => router.push('/register')}
               >
                 Sign Up
               </Button>

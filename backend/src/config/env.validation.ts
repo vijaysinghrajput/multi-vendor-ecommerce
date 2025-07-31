@@ -14,7 +14,11 @@ export const envValidationSchema = Joi.object({
   DATABASE_HOST: Joi.string().default('localhost'),
   DATABASE_PORT: Joi.number().default(5432),
   DATABASE_USERNAME: Joi.string().required(),
-  DATABASE_PASSWORD: Joi.string().required(),
+  DATABASE_PASSWORD: Joi.string().when('NODE_ENV', {
+    is: 'development',
+    then: Joi.optional().allow(''),
+    otherwise: Joi.required(),
+  }),
   DATABASE_NAME: Joi.string().required(),
   DATABASE_URL: Joi.string().uri(),
 

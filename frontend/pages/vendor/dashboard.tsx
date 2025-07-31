@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import RouteGuard from '../../components/RouteGuard';
+import { getUserData, logout } from '../../utils/auth';
+import VendorDashboardLayout from '../../layouts/VendorDashboardLayout';
 import {
   Container,
   Typography,
@@ -42,23 +45,24 @@ import {
   LocalShipping,
   Assignment
 } from '@mui/icons-material';
-import {
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
-} from 'recharts';
-import Layout from '../../components/Layout';
+// Charts temporarily disabled - recharts not installed
+// import {
+//   LineChart,
+//   Line,
+//   AreaChart,
+//   Area,
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   ResponsiveContainer,
+//   PieChart,
+//   Pie,
+//   Cell
+// } from 'recharts';
+
 import ordersData from '../../data/orders.json';
 import productsData from '../../data/products.json';
 import vendorsData from '../../data/vendors.json';
@@ -66,18 +70,27 @@ import vendorsData from '../../data/vendors.json';
 const VendorDashboard: NextPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [vendorData, setVendorData] = useState<any>(null);
   
-  // Mock vendor data (in real app, this would come from auth context)
-  const currentVendor = vendorsData[0];
+  useEffect(() => {
+    // Get vendor data from auth utilities
+    const storedVendorData = getUserData('vendor');
+    if (storedVendorData) {
+      setVendorData(storedVendorData);
+    }
+  }, []);
+  
+  // Mock vendor data (fallback to first vendor if no auth data)
+  const currentVendor = vendorData || vendorsData[0];
   const vendorProducts = productsData.filter(p => p.vendorId === currentVendor.id);
   const vendorOrders = ordersData.filter(order => 
     order.items && order.items.some(item => 
-      vendorProducts.some(product => product.title === item.productName)
+      vendorProducts.some(product => product.title === item.productTitle)
     )
   );
   
   // Calculate metrics
-  const totalRevenue = vendorOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+  const totalRevenue = vendorOrders.reduce((sum, order) => sum + (order.pricing?.total || 0), 0);
   const totalOrders = vendorOrders.length;
   const totalProducts = vendorProducts.length;
   const averageRating = vendorProducts.length > 0 ? vendorProducts.reduce((sum, p) => sum + (p.rating || 0), 0) / vendorProducts.length : 0;
@@ -101,9 +114,9 @@ const VendorDashboard: NextPage = () => {
   
   const recentOrders = vendorOrders.slice(0, 5).map(order => ({
     ...order,
-    customerName: order.customerName || 'Customer Name',
-    totalAmount: order.totalAmount || 0,
-    orderDate: order.orderDate || order.createdAt || new Date().toISOString()
+    customerName: order.shippingAddress?.name || 'Customer Name',
+    totalAmount: order.pricing?.total || 0,
+    orderDate: order.orderDate || new Date().toISOString()
   }));
   const topProducts = vendorProducts
     .sort((a, b) => (b.rating || 0) - (a.rating || 0))
@@ -161,11 +174,12 @@ const VendorDashboard: NextPage = () => {
   );
   
   return (
-    <Layout>
-      <Head>
-        <title>Vendor Dashboard - ShopHub</title>
-        <meta name="description" content="Manage your store, products, and orders" />
-      </Head>
+    <RouteGuard requiredRole="vendor">
+      <VendorDashboardLayout>
+        <Head>
+          <title>Vendor Dashboard - ShopHub</title>
+          <meta name="description" content="Manage your store, products, and orders" />
+        </Head>
       
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Header */}
@@ -244,25 +258,8 @@ const VendorDashboard: NextPage = () => {
                 <Typography variant="h6" gutterBottom>
                   Sales Overview
                 </Typography>
-                <Box sx={{ height: 300 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={salesData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip formatter={(value, name) => [
-                        name === 'sales' ? `₹${value.toLocaleString()}` : value,
-                        name === 'sales' ? 'Sales' : 'Orders'
-                      ]} />
-                      <Area
-                        type="monotone"
-                        dataKey="sales"
-                        stroke={theme.palette.primary.main}
-                        fill={theme.palette.primary.main}
-                        fillOpacity={0.3}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                <Box sx={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'grey.100' }}>
+                  <Typography color="text.secondary">Sales Chart Placeholder</Typography>
                 </Box>
               </CardContent>
             </Card>
@@ -275,25 +272,8 @@ const VendorDashboard: NextPage = () => {
                 <Typography variant="h6" gutterBottom>
                   Sales by Category
                 </Typography>
-                <Box sx={{ height: 300 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={categoryData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={100}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value) => [`${value}%`, 'Share']} />
-                    </PieChart>
-                  </ResponsiveContainer>
+                <Box sx={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'grey.100' }}>
+                  <Typography color="text.secondary">Category Distribution Chart Placeholder</Typography>
                 </Box>
                 <Box sx={{ mt: 2 }}>
                   {categoryData.map((category) => (
@@ -560,7 +540,8 @@ const VendorDashboard: NextPage = () => {
           </Grid>
         </Grid>
       </Container>
-    </Layout>
+    </VendorDashboardLayout>
+    </RouteGuard>
   );
 };
 

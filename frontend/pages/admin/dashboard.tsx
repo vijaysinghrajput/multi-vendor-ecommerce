@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import RouteGuard from '../../components/RouteGuard';
+import { getUserData, logout } from '../../utils/auth';
+import AdminDashboardLayout from '../../layouts/AdminDashboardLayout';
 import {
   Container,
   Typography,
@@ -56,7 +59,7 @@ import {
   BarChart,
   Assessment
 } from '@mui/icons-material';
-import Layout from '../../components/Layout';
+
 import ordersData from '../../data/orders.json';
 import vendorsData from '../../data/vendors.json';
 import productsData from '../../data/products.json';
@@ -107,16 +110,25 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, change, icon, col
 const AdminDashboard: NextPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [adminData, setAdminData] = useState<any>(null);
   
   const [timeRange, setTimeRange] = useState('7d');
   
+  useEffect(() => {
+    // Get admin data from auth utilities
+    const storedAdminData = getUserData('admin');
+    if (storedAdminData) {
+      setAdminData(storedAdminData);
+    }
+  }, []);
+  
   // Calculate metrics from mock data
-  const totalRevenue = ordersData.reduce((sum, order) => sum + order.total, 0);
+  const totalRevenue = ordersData.reduce((sum, order) => sum + (order.pricing?.total || 0), 0);
   const totalOrders = ordersData.length;
   const totalVendors = vendorsData.length;
-  const activeVendors = vendorsData.filter(v => v.isActive).length;
+  const activeVendors = vendorsData.filter(v => v.isVerified).length;
   const totalProducts = productsData.length;
-  const totalCustomers = 15420; // Mock data
+  const totalCustomers = Array.from(new Set(ordersData.map(order => order.userId))).length;
   
   // Recent orders for table
   const recentOrders = ordersData.slice(0, 5);
@@ -129,7 +141,7 @@ const AdminDashboard: NextPage = () => {
         return product?.vendorId === vendor.id;
       })
     );
-    const revenue = vendorOrders.reduce((sum, order) => sum + order.total, 0);
+    const revenue = vendorOrders.reduce((sum, order) => sum + (order.pricing?.total || 0), 0);
     return { ...vendor, revenue, orderCount: vendorOrders.length };
   }).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
   
@@ -167,11 +179,12 @@ const AdminDashboard: NextPage = () => {
   };
   
   return (
-    <Layout>
-      <Head>
-        <title>Admin Dashboard - E-commerce Platform</title>
-        <meta name="description" content="Admin dashboard for multi-vendor e-commerce platform" />
-      </Head>
+    <RouteGuard requiredRole="admin">
+      <AdminDashboardLayout>
+        <Head>
+          <title>Admin Dashboard - E-commerce Platform</title>
+          <meta name="description" content="Admin dashboard for multi-vendor e-commerce platform" />
+        </Head>
       
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Header */}
@@ -225,7 +238,7 @@ const AdminDashboard: NextPage = () => {
               value={`${activeVendors}/${totalVendors}`}
               change={5.1}
               icon={<Store />}
-              color="info"
+              color="primary"
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -275,21 +288,21 @@ const AdminDashboard: NextPage = () => {
                           <TableCell>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                               <Avatar sx={{ width: 32, height: 32, mr: 2, fontSize: 14 }}>
-                                {order.customerName.charAt(0)}
+                                {(order.shippingAddress?.name || `Customer ${order.userId}`).charAt(0)}
                               </Avatar>
                               <Box>
                                 <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                                  {order.customerName}
+                                  {order.shippingAddress?.name || `Customer ${order.userId}`}
                                 </Typography>
                                 <Typography variant="caption" color="text.secondary">
-                                  {order.customerEmail}
+                                  {order.userId}
                                 </Typography>
                               </Box>
                             </Box>
                           </TableCell>
                           <TableCell>
                             <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                              {formatCurrency(order.total)}
+                              {formatCurrency(order.pricing?.total || 0)}
                             </Typography>
                           </TableCell>
                           <TableCell>
@@ -379,14 +392,14 @@ const AdminDashboard: NextPage = () => {
                       <ListItem sx={{ px: 0 }}>
                         <ListItemAvatar>
                           <Avatar src={vendor.logo} sx={{ width: 48, height: 48 }}>
-                            {vendor.name.charAt(0)}
+                            {vendor.businessName?.charAt(0) || 'V'}
                           </Avatar>
                         </ListItemAvatar>
                         <ListItemText
                           primary={
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                                {vendor.name}
+                                {vendor.businessName}
                               </Typography>
                               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
                                 {formatCurrency(vendor.revenue)}
@@ -540,7 +553,8 @@ const AdminDashboard: NextPage = () => {
           </Grid>
         </Grid>
       </Container>
-    </Layout>
+      </AdminDashboardLayout>
+    </RouteGuard>
   );
 };
 

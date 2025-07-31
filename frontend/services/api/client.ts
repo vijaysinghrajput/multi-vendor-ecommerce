@@ -1,11 +1,11 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { store } from '../../store';
 import { clearAuth, refreshAccessToken } from '../../store/slices/authSlice';
 import toast from 'react-hot-toast';
 
 // Create axios instance
 export const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api/v1',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ export const apiClient: AxiosInstance = axios.create({
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
     const state = store.getState();
     const token = state.auth.token;
 

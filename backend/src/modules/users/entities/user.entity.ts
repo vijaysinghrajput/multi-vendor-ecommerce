@@ -61,23 +61,23 @@ export class User {
 
   @ApiHideProperty()
   @Exclude()
-  @Column({ nullable: true })
+  @Column({ name: 'password_hash', nullable: true })
   password?: string;
 
   @ApiProperty({ description: 'User first name', example: 'John' })
-  @Column()
+  @Column({ name: 'first_name' })
   firstName: string;
 
   @ApiProperty({ description: 'User last name', example: 'Doe' })
-  @Column()
+  @Column({ name: 'last_name' })
   lastName: string;
 
   @ApiProperty({ description: 'User avatar URL', required: false })
-  @Column({ nullable: true })
+  @Column({ name: 'avatar_url', nullable: true })
   avatar?: string;
 
   @ApiProperty({ description: 'User date of birth', required: false })
-  @Column({ type: 'date', nullable: true })
+  @Column({ name: 'date_of_birth', type: 'date', nullable: true })
   dateOfBirth?: Date;
 
   @ApiProperty({ description: 'User gender', enum: ['male', 'female', 'other'], required: false })
@@ -101,20 +101,20 @@ export class User {
   providerId?: string;
 
   @ApiProperty({ description: 'Email verification status' })
-  @Column({ default: false })
+  @Column({ name: 'email_verified', default: false })
   emailVerified: boolean;
 
   @ApiProperty({ description: 'Phone verification status' })
-  @Column({ default: false })
+  @Column({ name: 'phone_verified', default: false })
   phoneVerified: boolean;
 
   @ApiProperty({ description: 'Two-factor authentication enabled' })
-  @Column({ default: false })
+  @Column({ name: 'two_factor_enabled', default: false })
   twoFactorEnabled: boolean;
 
   @ApiHideProperty()
   @Exclude()
-  @Column({ nullable: true })
+  @Column({ name: 'two_factor_secret', nullable: true })
   twoFactorSecret?: string;
 
   @ApiProperty({ description: 'User preferred language', example: 'en' })
@@ -130,63 +130,63 @@ export class User {
   timezone: string;
 
   @ApiProperty({ description: 'Marketing emails consent' })
-  @Column({ default: false })
+  @Column({ name: 'marketing_consent', default: false })
   marketingConsent: boolean;
 
   @ApiProperty({ description: 'Push notifications enabled' })
-  @Column({ default: true })
+  @Column({ name: 'push_notifications', default: true })
   pushNotifications: boolean;
 
   @ApiProperty({ description: 'Email notifications enabled' })
-  @Column({ default: true })
+  @Column({ name: 'email_notifications', default: true })
   emailNotifications: boolean;
 
   @ApiProperty({ description: 'SMS notifications enabled' })
-  @Column({ default: false })
+  @Column({ name: 'sms_notifications', default: false })
   smsNotifications: boolean;
 
   @ApiProperty({ description: 'Last login timestamp', required: false })
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ name: 'last_login_at', type: 'timestamp', nullable: true })
   lastLoginAt?: Date;
 
   @ApiProperty({ description: 'Last login IP address', required: false })
-  @Column({ nullable: true })
+  @Column({ name: 'last_login_ip', nullable: true })
   lastLoginIp?: string;
 
   @ApiProperty({ description: 'Login attempts count' })
-  @Column({ default: 0 })
+  @Column({ name: 'login_attempts', default: 0 })
   loginAttempts: number;
 
   @ApiProperty({ description: 'Account locked until', required: false })
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ name: 'locked_until', type: 'timestamp', nullable: true })
   lockedUntil?: Date;
 
   @ApiHideProperty()
   @Exclude()
-  @Column({ nullable: true })
+  @Column({ name: 'refresh_token', nullable: true })
   refreshToken?: string;
 
   @ApiHideProperty()
   @Exclude()
-  @Column({ nullable: true })
+  @Column({ name: 'reset_password_token', nullable: true })
   resetPasswordToken?: string;
 
   @ApiHideProperty()
   @Exclude()
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ name: 'reset_password_expires', type: 'timestamp', nullable: true })
   resetPasswordExpires?: Date;
 
   @ApiHideProperty()
   @Exclude()
-  @Column({ nullable: true })
+  @Column({ name: 'email_verification_token', nullable: true })
   emailVerificationToken?: string;
 
   @ApiProperty({ description: 'User creation timestamp' })
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
   @ApiProperty({ description: 'User last update timestamp' })
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   // Relations
@@ -261,7 +261,7 @@ export class User {
 
   updateLastLogin(ip?: string): void {
     this.lastLoginAt = new Date();
-    this.lastLoginIp = ip;
+    this.lastLoginIp = ip;  
     this.resetLoginAttempts();
   }
 }
