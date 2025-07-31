@@ -45,7 +45,7 @@ import {
   Home,
   Business
 } from '@mui/icons-material';
-import { Layout } from '../components/Layout';
+import Layout from '../components/Layout';
 import ordersData from '../data/orders.json';
 
 interface TabPanelProps {
@@ -354,10 +354,10 @@ const ProfilePage: NextPage = () => {
                         </Box>
                         <Box>
                           <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                            {item.productName}
+                            {item.productTitle}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            Qty: {item.quantity} × ₹{item.price.toLocaleString()}
+                            Qty: {item.quantity} × ₹{item.unitPrice.toLocaleString()}
                           </Typography>
                         </Box>
                       </Box>
@@ -367,7 +367,7 @@ const ProfilePage: NextPage = () => {
                 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                   <Typography variant="h6">
-                    Total: ₹{order.totalAmount.toLocaleString()}
+                    Total: ₹{order.pricing?.total?.toLocaleString() || '0'}
                   </Typography>
                   <Box>
                     <Button variant="outlined" size="small" sx={{ mr: 1 }}>

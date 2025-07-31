@@ -61,7 +61,6 @@ import {
   Message,
   Phone,
   LocationOn,
-  Package,
   TrendingUp,
   TrendingDown,
   ShoppingCart,
@@ -78,7 +77,8 @@ import vendorsData from '../../data/vendors.json';
 
 interface OrderWithDetails {
   id: string;
-  customerId: string;
+  orderNumber: string;
+  userId: string;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
@@ -86,11 +86,12 @@ interface OrderWithDetails {
   items: Array<{
     id: string;
     productId: string;
-    productName: string;
+    productTitle: string;
     quantity: number;
-    price: number;
+    unitPrice: number;
     totalPrice: number;
     vendorId: string;
+    status: string;
   }>;
   totalAmount: number;
   status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
@@ -98,7 +99,23 @@ interface OrderWithDetails {
   paymentMethod: string;
   createdAt: string;
   updatedAt: string;
-  shippingAddress: string;
+  shippingAddress: {
+    name: string;
+    phone: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    pincode: string;
+    country: string;
+  };
+  pricing: {
+    subtotal: number;
+    shipping: number;
+    tax: number;
+    discount: number;
+    total: number;
+  };
 }
 
 const VendorOrders: NextPage = () => {
@@ -114,26 +131,33 @@ const VendorOrders: NextPage = () => {
         return product?.vendorId === currentVendor.id;
       })
     ).map(order => ({
-      ...order,
-      customerId: order.customerId || 'customer-' + Math.random().toString(36).substr(2, 9),
-      customerName: order.customerName || 'Customer Name',
-      customerEmail: order.customerEmail || 'customer@example.com',
-      customerPhone: order.customerPhone || '+91 98765 43210',
-      paymentMethod: order.paymentMethod || 'UPI',
-      paymentStatus: order.paymentStatus || 'paid',
-      createdAt: order.createdAt || order.orderDate,
-      updatedAt: order.updatedAt || order.orderDate,
-      totalAmount: order.totalAmount || 0,
+      id: order.id,
+      orderNumber: order.orderNumber,
+      userId: order.userId,
+      customerName: order.shippingAddress?.name || 'Customer Name',
+      customerEmail: 'customer@example.com',
+      customerPhone: order.shippingAddress?.phone || '+91 98765 43210',
+      orderDate: order.orderDate,
+      paymentMethod: order.payment?.method || 'card',
+      paymentStatus: order.paymentStatus as 'pending' | 'paid' | 'failed',
+      status: order.status as 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled',
+      createdAt: order.orderDate,
+      updatedAt: order.orderDate,
+      totalAmount: order.pricing?.total || 0,
+      shippingAddress: order.shippingAddress,
+      pricing: order.pricing,
       items: order.items.filter(item => {
         const product = productsData.find(p => p.id === item.productId);
         return product?.vendorId === currentVendor.id;
       }).map(item => ({
-        ...item,
-        id: item.id || 'item-' + Math.random().toString(36).substr(2, 9),
-        productName: productsData.find(p => p.id === item.productId)?.title || 'Unknown Product',
-        price: item.price || productsData.find(p => p.id === item.productId)?.price || 0,
-        totalPrice: item.totalPrice || (item.quantity * (productsData.find(p => p.id === item.productId)?.price || 0)),
-        vendorId: currentVendor.id
+        id: item.id,
+        productId: item.productId,
+        productTitle: item.productTitle,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        totalPrice: item.totalPrice,
+        vendorId: item.vendorId,
+        status: item.status
       }))
     }))
   );
@@ -203,7 +227,7 @@ const VendorOrders: NextPage = () => {
       case 'confirmed':
         return <CheckCircle />;
       case 'processing':
-        return <Package />;
+        return <LocalShipping />;
       case 'shipped':
         return <LocalShipping />;
       case 'delivered':
@@ -247,7 +271,7 @@ const VendorOrders: NextPage = () => {
   const confirmStatusUpdate = () => {
     if (selectedOrder && newStatus) {
       setOrders(prev => prev.map(order => 
-        order.id === selectedOrder.id ? { ...order, status: newStatus } : order
+        order.id === selectedOrder.id ? { ...order, status: newStatus as 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' } : order
       ));
       setUpdateStatusOpen(false);
       setSelectedOrder(null);

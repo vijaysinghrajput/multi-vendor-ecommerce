@@ -65,7 +65,7 @@ interface Product {
   vendorId: string;
   rating: number;
   reviewCount: number;
-  inStock: boolean;
+  stock?: number;
   discount?: number;
   tags?: string[];
 }
@@ -143,7 +143,7 @@ const SearchPage: NextPage = () => {
       const matchesRating = selectedRating === 0 || product.rating >= selectedRating;
       
       // Stock filter
-      const matchesStock = !inStockOnly || product.inStock;
+      const matchesStock = !inStockOnly || (product.stock && product.stock > 0);
       
       // Discount filter
       const matchesDiscount = !discountOnly || (product.discount && product.discount > 0);

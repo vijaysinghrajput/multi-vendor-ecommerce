@@ -96,8 +96,8 @@ const VendorProducts: NextPage = () => {
       const matchesCategory = !categoryFilter || product.category === categoryFilter;
       
       const matchesStatus = !statusFilter || 
-        (statusFilter === 'active' && product.inStock) ||
-        (statusFilter === 'inactive' && !product.inStock);
+        (statusFilter === 'active' && product.stock > 0) ||
+        (statusFilter === 'inactive' && product.stock === 0);
       
       return matchesSearch && matchesCategory && matchesStatus;
     })
@@ -112,7 +112,7 @@ const VendorProducts: NextPage = () => {
         case 'rating':
           return b.rating - a.rating;
         case 'stock':
-          return (b.inStock ? 1 : 0) - (a.inStock ? 1 : 0);
+          return (b.stock > 0 ? 1 : 0) - (a.stock > 0 ? 1 : 0);
         case 'newest':
         default:
           return b.id.localeCompare(a.id);
@@ -160,7 +160,7 @@ const VendorProducts: NextPage = () => {
   
   const handleToggleStatus = (productId: string) => {
     setProducts(prev => prev.map(p => 
-      p.id === productId ? { ...p, inStock: !p.inStock } : p
+      p.id === productId ? { ...p, stock: p.stock > 0 ? 0 : 10 } : p
     ));
   };
   
@@ -175,10 +175,8 @@ const VendorProducts: NextPage = () => {
   };
   
   const getStockStatus = (product: any) => {
-    if (!product.inStock) return { label: 'Out of Stock', color: 'error' };
-    // Mock stock levels
-    const stock = Math.floor(Math.random() * 100) + 1;
-    if (stock < 10) return { label: 'Low Stock', color: 'warning' };
+    if (product.stock === 0) return { label: 'Out of Stock', color: 'error' };
+    if (product.stock < 10) return { label: 'Low Stock', color: 'warning' };
     return { label: 'In Stock', color: 'success' };
   };
   
@@ -270,7 +268,6 @@ const VendorProducts: NextPage = () => {
             <TableCell padding="checkbox">
               <Switch
                 checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
-                indeterminate={selectedProducts.length > 0 && selectedProducts.length < filteredProducts.length}
                 onChange={handleSelectAll}
               />
             </TableCell>
@@ -356,12 +353,12 @@ const VendorProducts: NextPage = () => {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={product.inStock}
+                          checked={product.stock > 0}
                           onChange={() => handleToggleStatus(product.id)}
                           size="small"
                         />
                       }
-                      label={product.inStock ? 'Active' : 'Inactive'}
+                      label={product.stock > 0 ? 'Active' : 'Inactive'}
                     />
                   </TableCell>
                   <TableCell>
@@ -452,7 +449,7 @@ const VendorProducts: NextPage = () => {
                       Active Products
                     </Typography>
                     <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                      {products.filter(p => p.inStock).length}
+                      {products.filter(p => p.stock > 0).length}
                     </Typography>
                   </Box>
                   <CheckCircle sx={{ fontSize: 40, color: 'success.main' }} />

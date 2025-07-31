@@ -127,6 +127,7 @@ const components = {
         textTransform: 'none',
         fontWeight: 500,
         padding: '8px 16px',
+        variants: [],
       },
       contained: {
         boxShadow: 'none',

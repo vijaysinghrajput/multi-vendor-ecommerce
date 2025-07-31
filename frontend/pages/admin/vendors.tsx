@@ -113,15 +113,27 @@ const AdminVendors: NextPage = () => {
           return product?.vendorId === vendor.id;
         })
       );
-      const totalRevenue = vendorOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+      const totalRevenue = vendorOrders.reduce((sum, order) => sum + (order.pricing?.total || 0), 0);
       const averageOrderValue = vendorOrders.length > 0 ? totalRevenue / vendorOrders.length : 0;
       
       return {
-        ...vendor,
+        id: vendor.id,
+        name: vendor.businessName || vendor.displayName,
+        email: vendor.contact?.email || '',
+        phone: vendor.contact?.phone || '',
+        address: `${vendor.location?.city || ''}, ${vendor.location?.state || ''}`,
+        category: vendor.categories?.[0] || 'General',
+        rating: vendor.rating || 0,
+        totalProducts: vendor.totalProducts || 0,
+        isActive: vendor.isVerified || false,
+        joinedDate: vendor.joinedDate || new Date().toISOString(),
+        logo: vendor.logo,
+        website: vendor.socialLinks?.website,
+        description: vendor.description || '',
         totalOrders: vendorOrders.length,
         totalRevenue,
         averageOrderValue,
-        status: vendor.isActive ? 'approved' : ['pending', 'suspended', 'rejected'][Math.floor(Math.random() * 3)] as 'pending' | 'approved' | 'suspended' | 'rejected'
+        status: vendor.isVerified ? 'approved' : ['pending', 'suspended', 'rejected'][Math.floor(Math.random() * 3)] as 'pending' | 'approved' | 'suspended' | 'rejected'
       };
     });
   });
@@ -229,7 +241,7 @@ const AdminVendors: NextPage = () => {
       case 'pending': return <Schedule />;
       case 'suspended': return <Block />;
       case 'rejected': return <Warning />;
-      default: return null;
+      default: return undefined;
     }
   };
   

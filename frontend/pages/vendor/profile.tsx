@@ -32,7 +32,6 @@ import {
   DialogActions,
   Tab,
   Tabs,
-  TabPanel,
   useTheme,
   useMediaQuery,
   InputAdornment
@@ -152,7 +151,7 @@ const VendorProfile: NextPage = () => {
   const handleNestedInputChange = (parent: string, field: string, value: any) => {
     setEditedData(prev => ({
       ...prev,
-      [parent]: { ...prev[parent as keyof typeof prev], [field]: value }
+      [parent]: { ...(prev as any)[parent], [field]: value }
     }));
   };
   
@@ -170,10 +169,10 @@ const VendorProfile: NextPage = () => {
     // Validate required fields
     const newErrors: Record<string, string> = {};
     
-    if (!editedData.name.trim()) newErrors.name = 'Store name is required';
-    if (!editedData.email.trim()) newErrors.email = 'Email is required';
-    if (!editedData.phone.trim()) newErrors.phone = 'Phone is required';
-    if (!editedData.address.trim()) newErrors.address = 'Address is required';
+    if (!editedData.businessName.trim()) newErrors.businessName = 'Store name is required';
+    if (!editedData.contact.email.trim()) newErrors.email = 'Email is required';
+    if (!editedData.contact.phone.trim()) newErrors.phone = 'Phone is required';
+    if (!editedData.location?.city?.trim()) newErrors.address = 'Location is required';
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -234,11 +233,11 @@ const VendorProfile: NextPage = () => {
             sx={{ width: 100, height: 100, mr: 3, fontSize: 36 }}
             src={editedData.logo}
           >
-            {editedData.name.charAt(0)}
+            {editedData.businessName.charAt(0)}
           </Avatar>
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
-              {editedData.name}
+              {editedData.businessName}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
               <Chip
@@ -272,11 +271,11 @@ const VendorProfile: NextPage = () => {
         <TextField
           fullWidth
           label="Store Name"
-          value={editedData.name}
-          onChange={(e) => handleInputChange('name', e.target.value)}
+          value={editedData.businessName}
+          onChange={(e) => handleInputChange('businessName', e.target.value)}
           disabled={!isEditing}
-          error={!!errors.name}
-          helperText={errors.name}
+          error={!!errors.businessName}
+          helperText={errors.businessName}
         />
       </Grid>
       
@@ -284,8 +283,8 @@ const VendorProfile: NextPage = () => {
         <TextField
           fullWidth
           label="Store Category"
-          value={editedData.category}
-          onChange={(e) => handleInputChange('category', e.target.value)}
+          value={editedData.categories?.[0] || ''}
+          onChange={(e) => handleInputChange('categories', [e.target.value])}
           disabled={!isEditing}
         />
       </Grid>
@@ -307,8 +306,8 @@ const VendorProfile: NextPage = () => {
           fullWidth
           label="Email"
           type="email"
-          value={editedData.email}
-          onChange={(e) => handleInputChange('email', e.target.value)}
+          value={editedData.contact?.email || ''}
+          onChange={(e) => handleNestedInputChange('contact', 'email', e.target.value)}
           disabled={!isEditing}
           error={!!errors.email}
           helperText={errors.email}
@@ -326,8 +325,8 @@ const VendorProfile: NextPage = () => {
         <TextField
           fullWidth
           label="Phone"
-          value={editedData.phone}
-          onChange={(e) => handleInputChange('phone', e.target.value)}
+          value={editedData.contact?.phone || ''}
+          onChange={(e) => handleNestedInputChange('contact', 'phone', e.target.value)}
           disabled={!isEditing}
           error={!!errors.phone}
           helperText={errors.phone}
@@ -341,14 +340,12 @@ const VendorProfile: NextPage = () => {
         />
       </Grid>
       
-      <Grid item xs={12}>
+      <Grid item xs={12} md={4}>
         <TextField
           fullWidth
-          multiline
-          rows={2}
-          label="Address"
-          value={editedData.address}
-          onChange={(e) => handleInputChange('address', e.target.value)}
+          label="City"
+          value={editedData.location?.city || ''}
+          onChange={(e) => handleNestedInputChange('location', 'city', e.target.value)}
           disabled={!isEditing}
           error={!!errors.address}
           helperText={errors.address}
@@ -362,12 +359,32 @@ const VendorProfile: NextPage = () => {
         />
       </Grid>
       
+      <Grid item xs={12} md={4}>
+        <TextField
+          fullWidth
+          label="State"
+          value={editedData.location?.state || ''}
+          onChange={(e) => handleNestedInputChange('location', 'state', e.target.value)}
+          disabled={!isEditing}
+        />
+      </Grid>
+      
+      <Grid item xs={12} md={4}>
+        <TextField
+          fullWidth
+          label="Country"
+          value={editedData.location?.country || ''}
+          onChange={(e) => handleNestedInputChange('location', 'country', e.target.value)}
+          disabled={!isEditing}
+        />
+      </Grid>
+      
       <Grid item xs={12} md={6}>
         <TextField
           fullWidth
           label="Website"
-          value={editedData.website || ''}
-          onChange={(e) => handleInputChange('website', e.target.value)}
+          value={editedData.socialLinks?.website || ''}
+          onChange={(e) => handleNestedInputChange('socialLinks', 'website', e.target.value)}
           disabled={!isEditing}
           InputProps={{
             startAdornment: (
@@ -383,12 +400,12 @@ const VendorProfile: NextPage = () => {
         <FormControl fullWidth disabled={!isEditing}>
           <InputLabel>Store Status</InputLabel>
           <Select
-            value={editedData.isActive ? 'active' : 'inactive'}
+            value={editedData.isVerified ? 'verified' : 'pending'}
             label="Store Status"
-            onChange={(e) => handleInputChange('isActive', e.target.value === 'active')}
+            onChange={(e) => handleInputChange('isVerified', e.target.value === 'verified')}
           >
-            <MenuItem value="active">Active</MenuItem>
-            <MenuItem value="inactive">Inactive</MenuItem>
+            <MenuItem value="verified">Verified</MenuItem>
+            <MenuItem value="pending">Pending Verification</MenuItem>
           </Select>
         </FormControl>
       </Grid>
