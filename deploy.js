@@ -268,12 +268,13 @@ function syncDatabase() {
   }
 }
 
-// Function to deploy to Vercel
- async function deployToVercel() {
-   logStep('Vercel', 'Deploying frontend to Vercel');
+// Function to deploy to Vercel (DISABLED - User will manage manually)
+async function deployToVercel() {
+  logStep('Vercel', 'Vercel deployment disabled - User will manage manually');
   
+  // Always skip Vercel deployment as user will manage it manually
   if (!FRONTEND_CONFIG.vercel.enabled || DEPLOY_CONFIG.development?.skipSteps?.vercel) {
-    logWarning('Skipping Vercel deployment (disabled or in development mode)');
+    logWarning('Skipping Vercel deployment (disabled - user will manage manually)');
     return;
   }
   
@@ -538,8 +539,9 @@ async function deploy() {
     // Step 8: Update frontend environment
     updateFrontendEnv();
     
-    // Step 9: Deploy to Vercel
-    vercelUrl = await deployToVercel();
+    // Step 9: Deploy to Vercel (DISABLED - User manages manually)
+    // vercelUrl = await deployToVercel(); // Disabled - user will manage Vercel manually
+    logWarning('Vercel deployment skipped - user will manage GitHub and Vercel integration manually');
     
     // Step 10: Restart PM2 application
     logStep(10, 'Managing PM2 application');

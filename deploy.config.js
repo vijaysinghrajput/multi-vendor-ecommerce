@@ -135,14 +135,14 @@ module.exports = {
       NEXT_PUBLIC_ENV: 'production'
     },
     
-    // Vercel deployment settings
+    // Vercel deployment settings (DISABLED - User will manage manually)
     vercel: {
-      enabled: process.env.VERCEL_DEPLOY_ENABLED !== 'false',
+      enabled: false, // Disabled as requested by user
       projectName: process.env.VERCEL_PROJECT_NAME || 'wise-lifescience',
       teamId: process.env.VERCEL_TEAM_ID,
       token: process.env.VERCEL_TOKEN,
       domain: process.env.VERCEL_DOMAIN || 'wise-lifescience.vercel.app',
-      waitForDeployment: process.env.VERCEL_WAIT_DEPLOY !== 'false',
+      waitForDeployment: false,
       timeout: parseInt(process.env.VERCEL_TIMEOUT) || 300000 // 5 minutes
     }
   },
@@ -242,8 +242,8 @@ module.exports = {
   github: {
     enabled: process.env.GITHUB_INTEGRATION_ENABLED !== 'false',
     token: process.env.GITHUB_TOKEN,
-    repository: process.env.GITHUB_REPOSITORY || 'wise-lifescience',
-    owner: process.env.GITHUB_OWNER,
+    repository: process.env.GITHUB_REPOSITORY || 'multi-vendor-ecommerce',
+    owner: process.env.GITHUB_OWNER || 'vijaysinghrajput',
     branch: process.env.GITHUB_BRANCH || 'main',
     autoCommit: process.env.GITHUB_AUTO_COMMIT !== 'false',
     commitMessage: process.env.GITHUB_COMMIT_MESSAGE || 'chore: automated deployment update',
