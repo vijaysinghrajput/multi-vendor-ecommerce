@@ -358,7 +358,7 @@ function uploadFiles() {
     '-avz',
     '--delete',
     ...excludePatterns,
-    '-e', `"${sshCommand}"`,
+    '-e', `'${sshCommand}'`,
     `${localBackendPath}/`,
     `${SERVER_CONFIG.username}@${SERVER_CONFIG.host}:${clientConfig.backendPath}/`
   ].join(' ');
