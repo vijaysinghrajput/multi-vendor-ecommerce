@@ -54,7 +54,7 @@ import {
   AccordionDetails,
   Fab
 } from '@mui/material';
-import { TreeView, TreeItem } from '@mui/lab';
+// TreeView removed due to deprecation
 import {
   Search,
   FilterList,
@@ -166,7 +166,6 @@ const AdminCategories: NextPage = () => {
   const [actionMenuAnchor, setActionMenuAnchor] = useState<null | HTMLElement>(null);
   const [actionMenuCategory, setActionMenuCategory] = useState<Category | null>(null);
   const [viewMode, setViewMode] = useState<'table' | 'grid' | 'tree'>('table');
-  const [expandedNodes, setExpandedNodes] = useState<string[]>([]);
   
   // Form state for add/edit
   const [formData, setFormData] = useState({
@@ -374,53 +373,73 @@ const AdminCategories: NextPage = () => {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
   
-  const renderTreeItem = (category: Category) => {
+  const renderTreeItem = (category: Category, level: number = 0) => {
+    const [expanded, setExpanded] = useState(false);
+    const hasChildren = category.children && category.children.length > 0;
+    
     return (
-      <TreeItem
-        key={category.id}
-        nodeId={category.id}
-        label={
-          <Box sx={{ display: 'flex', alignItems: 'center', py: 1 }}>
+      <Box key={category.id}>
+        <ListItem
+          sx={{ 
+            pl: level * 3 + 2,
+            borderLeft: level > 0 ? '1px solid' : 'none',
+            borderColor: 'divider',
+            '&:hover': { bgcolor: 'action.hover' }
+          }}
+        >
+          <ListItemAvatar>
             <Avatar
               sx={{ 
                 width: 32, 
                 height: 32, 
-                mr: 2, 
                 bgcolor: category.color,
                 fontSize: '0.875rem'
               }}
             >
               {category.icon ? category.icon : category.name.charAt(0)}
             </Avatar>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                {category.name}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {category.productCount} products
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Chip
-                label={category.isActive ? 'Active' : 'Inactive'}
-                color={category.isActive ? 'success' : 'default'}
-                size="small"
-              />
-              <IconButton
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleActionMenuOpen(e, category);
-                }}
-              >
-                <MoreVert fontSize="small" />
-              </IconButton>
-            </Box>
+          </ListItemAvatar>
+          <ListItemText
+            primary={
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {hasChildren && (
+                  <IconButton
+                    size="small"
+                    onClick={() => setExpanded(!expanded)}
+                  >
+                    {expanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+                  </IconButton>
+                )}
+                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                  {category.name}
+                </Typography>
+              </Box>
+            }
+            secondary={`${category.productCount} products`}
+          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Chip
+              label={category.isActive ? 'Active' : 'Inactive'}
+              color={category.isActive ? 'success' : 'default'}
+              size="small"
+            />
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleActionMenuOpen(e, category);
+              }}
+            >
+              <MoreVert fontSize="small" />
+            </IconButton>
           </Box>
-        }
-      >
-        {category.children?.map(child => renderTreeItem(child))}
-      </TreeItem>
+        </ListItem>
+        {hasChildren && expanded && (
+          <Box>
+            {category.children!.map(child => renderTreeItem(child, level + 1))}
+          </Box>
+        )}
+      </Box>
     );
   };
   
@@ -672,14 +691,9 @@ const AdminCategories: NextPage = () => {
         {/* Categories Display */}
         {viewMode === 'tree' ? (
           <Paper sx={{ p: 3 }}>
-            <TreeView
-              defaultCollapseIcon={<KeyboardArrowDown />}
-              defaultExpandIcon={<KeyboardArrowRight />}
-              expanded={expandedNodes}
-              onNodeToggle={(event: React.SyntheticEvent, nodeIds: string[]) => setExpandedNodes(nodeIds)}
-            >
+            <List>
               {categories.map(category => renderTreeItem(category))}
-            </TreeView>
+            </List>
           </Paper>
         ) : viewMode === 'grid' ? (
           <>

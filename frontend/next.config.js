@@ -98,7 +98,6 @@ const nextConfig = {
   
   // Experimental features
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['@mui/material', '@mui/icons-material'],
   },
 
