@@ -1,0 +1,61 @@
+{
+  "name": "saas-multi-vendor-ecommerce",
+  "version": "1.0.0",
+  "description": "Multi-vendor e-commerce platform with automated deployment",
+  "main": "deploy.js",
+  "scripts": {
+    "deploy": "node deploy.js",
+    "deploy:dry-run": "node deploy.js --dry-run",
+    "deploy:help": "node deploy.js --help",
+    "deploy:config": "node -e \"console.log(JSON.stringify(require('./deploy.config.js').getConfig(), null, 2))\"",
+    "deploy:shell": "chmod +x deploy.sh && ./deploy.sh",
+    "deploy:vercel": "cd frontend && vercel --prod",
+    "deploy:backend-only": "SKIP_VERCEL=true SKIP_GITHUB=true node deploy.js",
+    "deploy:frontend-only": "npm run deploy:vercel",
+    "setup": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "setup:deploy": "cp .env.deploy.example .env.deploy && echo 'Please configure .env.deploy file'",
+    "dev:backend": "cd backend && npm run start:dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:full": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build:all": "npm run build:backend && npm run build:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test:all": "npm run test:backend && npm run test:frontend",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:all": "npm run lint:backend && npm run lint:frontend",
+    "db:backup": "node -e \"require('./deploy.js').backupDatabase()\"",
+    "db:sync": "node -e \"require('./deploy.js').syncDatabase()\"",
+    "github:push": "git add . && git commit -m 'Auto deployment update' && git push",
+    "health:check": "node -e \"const config = require('./deploy.config.js').getConfig(); const url = \\`http://${config.server.host}:${config.server.serverPort}${config.healthCheck.endpoint}\\`; console.log('Testing:', url); require('child_process').exec(\\`curl -f ${url}\\`, (e,s,err) => console.log(e ? 'Failed' : 'Success'));\""
+  },
+  "keywords": [
+    "ecommerce",
+    "multi-vendor",
+    "nestjs",
+    "nextjs",
+    "deployment",
+    "automation"
+  ],
+  "author": "Your Company",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "your-repository-url"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
+}
