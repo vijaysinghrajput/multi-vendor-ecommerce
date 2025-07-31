@@ -136,7 +136,7 @@ const LoginPage: NextPage = () => {
     
     try {
       // Call OTP verification API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/verify-otp`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ const LoginPage: NextPage = () => {
     
     try {
       // Call user registration API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/complete-registration`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/complete-registration`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -252,7 +252,7 @@ const LoginPage: NextPage = () => {
     
     try {
       // Redirect to social login endpoint
-      window.location.href = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/social/${provider}?redirect=${encodeURIComponent(window.location.origin + '/auth/callback')}`;
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/social/${provider}?redirect=${encodeURIComponent(window.location.origin + '/auth/callback')}`;
     } catch (error) {
       console.error(`${provider} login error:`, error);
       setError(`${provider} login failed. Please try again.`);
@@ -273,7 +273,7 @@ const LoginPage: NextPage = () => {
     
     try {
       // Call customer login API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

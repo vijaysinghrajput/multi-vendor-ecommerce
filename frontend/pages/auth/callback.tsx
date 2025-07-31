@@ -37,7 +37,7 @@ const AuthCallback: NextPage = () => {
         }
 
         // Exchange code for tokens
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/social/${provider}/callback`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/social/${provider}/callback`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
