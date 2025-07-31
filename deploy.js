@@ -498,7 +498,7 @@ async function deploy() {
     logStep(5, 'Installing dependencies');
     if (DEPLOY_CONFIG.installDependencies) {
       executeSSHCommand(
-        `cd ${clientConfig.backendPath} && npm install --production`,
+        `cd ${clientConfig.backendPath} && npm install`,
         'Install npm dependencies'
       );
       logSuccess('Dependencies installed');
