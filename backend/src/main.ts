@@ -101,7 +101,8 @@ async function bootstrap() {
 
   // Start server
   const port = configService.get('PORT') || 3000;
-  await app.listen(port);
+  const host = configService.get('HOST') || '0.0.0.0'; // Bind to all interfaces for production
+  await app.listen(port, host);
 
   logger.log(`🚀 Application is running on: http://localhost:${port}/${apiPrefix}`);
   logger.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
