@@ -81,7 +81,7 @@ const AdminLogin: React.FC = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch('http://localhost:3003/api/v1/auth/admin-login', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/admin-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
