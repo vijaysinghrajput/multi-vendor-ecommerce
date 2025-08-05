@@ -32,13 +32,18 @@ interface LoginForm {
 interface ApiResponse {
   success: boolean;
   message: string;
-  access_token?: string;
-  user?: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: 'user' | 'vendor' | 'admin';
+  data?: {
+    success: boolean;
+    message: string;
+    user: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      role: 'user' | 'vendor' | 'admin';
+    };
+    accessToken: string;
+    refreshToken: string;
   };
 }
 
@@ -88,9 +93,9 @@ const AdminLogin: React.FC = () => {
 
       const data: ApiResponse = await response.json();
 
-      if (response.ok && data.access_token && data.user) {
-        const accessToken = data.access_token;
-        const user = data.user;
+      if (response.ok && data.data && data.data.accessToken && data.data.user) {
+        const accessToken = data.data.accessToken;
+        const user = data.data.user;
         // Ensure user has correct role
         if (user.role !== 'admin') {
           setError('Invalid credentials. Please use the correct login portal for your account type.');

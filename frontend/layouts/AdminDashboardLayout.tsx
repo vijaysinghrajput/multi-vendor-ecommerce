@@ -129,12 +129,11 @@ const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children })
             flexGrow: 1,
             minHeight: '100vh',
             backgroundColor: adminTheme.palette.background.default,
-            transition: adminTheme.transitions.create(['margin', 'width'], {
+            transition: adminTheme.transitions.create(['margin'], {
               easing: adminTheme.transitions.easing.sharp,
               duration: adminTheme.transitions.duration.leavingScreen,
             }),
             marginLeft: isMobile ? 0 : (sidebarOpen ? `${sidebarWidth}px` : 0),
-            width: isMobile ? '100%' : (sidebarOpen ? `calc(100% - ${sidebarWidth}px)` : '100%'),
             pt: 8, // Account for header height (64px)
             overflow: 'hidden',
           }}

@@ -35,13 +35,18 @@ interface LoginForm {
 interface ApiResponse {
   success: boolean;
   message: string;
-  access_token?: string;
-  user?: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: 'user' | 'vendor' | 'admin';
+  data?: {
+    success: boolean;
+    message: string;
+    user: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      role: 'user' | 'vendor' | 'admin';
+    };
+    accessToken: string;
+    refreshToken: string;
   };
 }
 
@@ -91,16 +96,16 @@ const AdminLogin: React.FC = () => {
 
       const data: ApiResponse = await response.json();
 
-      if (response.ok && data.access_token && data.user) {
+      if (response.ok && data.data && data.data.accessToken && data.data.user) {
         // Ensure user has correct role
-        if (data.user.role !== 'admin') {
+        if (data.data.user.role !== 'admin') {
           setError('Invalid credentials. Please use the correct login portal for your account type.');
           return;
         }
 
         // Store token and user data using auth utilities
-        setAuthData('admin', data.access_token, data.user);
-        console.log('Admin login: Auth data stored', { token: data.access_token, user: data.user });
+        setAuthData('admin', data.data.accessToken, data.data.user);
+        console.log('Admin login: Auth data stored', { token: data.data.accessToken, user: data.data.user });
         
         setSuccess('Admin login successful! Redirecting...');
         // Redirect to admin dashboard after successful login

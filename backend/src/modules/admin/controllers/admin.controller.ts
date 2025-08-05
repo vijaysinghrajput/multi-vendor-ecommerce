@@ -300,4 +300,99 @@ export class AdminController {
   async getTopPerformers() {
     return this.adminService.getTopPerformers();
   }
+
+  // Vendors Management
+  @Get('vendors')
+  async getAllVendors(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.adminService.getAllVendors(page, limit, search, status);
+  }
+
+  @Get('vendors/applications')
+  async getVendorApplications(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    return this.adminService.getVendorApplications(page, limit);
+  }
+
+  // Products Management
+  @Get('products')
+  async getAllProducts(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('search') search?: string,
+    @Query('category') category?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.adminService.getAllProducts(page, limit, search, category, status);
+  }
+
+  // Orders Management
+  @Get('orders')
+  async getAllOrders(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+  ) {
+    const dateFromObj = dateFrom ? new Date(dateFrom) : undefined;
+    const dateToObj = dateTo ? new Date(dateTo) : undefined;
+    return this.adminService.getAllOrders(page, limit, search, status, dateFromObj, dateToObj);
+  }
+
+  // Customers Management
+  @Get('customers')
+  async getAllCustomers(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.adminService.getAllCustomers(page, limit, search, status);
+  }
+
+  // Categories Management
+  @Get('categories')
+  async getAllCategories(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('search') search?: string,
+  ) {
+    return this.adminService.getAllCategories(page, limit, search);
+  }
+
+  // Financial Reports
+  @Get('financial-reports')
+  async getFinancialReports(
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+  ) {
+    const dateFromObj = dateFrom ? new Date(dateFrom) : undefined;
+    const dateToObj = dateTo ? new Date(dateTo) : undefined;
+    return this.adminService.getFinancialReports(dateFromObj, dateToObj);
+  }
+
+  // Marketing Data
+  @Get('marketing')
+  async getMarketingData() {
+    return this.adminService.getMarketingData();
+  }
+
+  // Returns and Exchanges
+  @Get('returns-exchanges')
+  async getReturnsAndExchanges(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('type') type?: 'return' | 'exchange',
+    @Query('status') status?: string,
+  ) {
+    return this.adminService.getReturnsAndExchanges(page, limit, type, status);
+  }
 }

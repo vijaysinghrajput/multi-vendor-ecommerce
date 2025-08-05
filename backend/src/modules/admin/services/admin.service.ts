@@ -408,4 +408,457 @@ export class AdminService {
       categories: topCategories,
     };
   }
+
+  // Vendors Management
+  async getAllVendors(page: number = 1, limit: number = 10, search?: string, status?: string) {
+    const queryBuilder = this.vendorRepository
+      .createQueryBuilder('vendor')
+      .leftJoinAndSelect('vendor.user', 'user')
+      .leftJoinAndSelect('vendor.products', 'products')
+      .select([
+        'vendor.id',
+        'vendor.businessName',
+        'vendor.status',
+        'vendor.isVerified',
+        'vendor.totalRevenue',
+        'vendor.commissionRate',
+        'vendor.createdAt',
+        'user.firstName',
+        'user.lastName',
+        'user.email',
+        'user.phone',
+      ])
+      .addSelect('COUNT(products.id)', 'productCount')
+      .groupBy('vendor.id, user.id');
+
+    if (search) {
+      queryBuilder.andWhere(
+        '(vendor.businessName ILIKE :search OR user.firstName ILIKE :search OR user.lastName ILIKE :search OR user.email ILIKE :search)',
+        { search: `%${search}%` }
+      );
+    }
+
+    if (status) {
+      queryBuilder.andWhere('vendor.status = :status', { status });
+    }
+
+    const total = await queryBuilder.getCount();
+    const vendors = await queryBuilder
+      .orderBy('vendor.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getRawAndEntities();
+
+    return {
+      data: vendors.entities,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async getVendorApplications(page: number = 1, limit: number = 10) {
+    const queryBuilder = this.vendorRepository
+      .createQueryBuilder('vendor')
+      .leftJoinAndSelect('vendor.user', 'user')
+      .where('vendor.status = :status', { status: 'pending' })
+      .orderBy('vendor.createdAt', 'DESC');
+
+    const total = await queryBuilder.getCount();
+    const applications = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+
+    return {
+      data: applications,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  // Products Management
+  async getAllProducts(page: number = 1, limit: number = 10, search?: string, category?: string, status?: string) {
+    const queryBuilder = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.vendor', 'vendor')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('vendor.user', 'user')
+      .select([
+        'product.id',
+        'product.name',
+        'product.sku',
+        'product.price',
+        'product.stockQuantity',
+        'product.status',
+        'product.rating',
+        'product.reviewCount',
+        'product.createdAt',
+        'vendor.businessName',
+        'category.name',
+        'user.firstName',
+        'user.lastName',
+      ]);
+
+    if (search) {
+      queryBuilder.andWhere(
+        '(product.name ILIKE :search OR product.sku ILIKE :search OR vendor.businessName ILIKE :search)',
+        { search: `%${search}%` }
+      );
+    }
+
+    if (category) {
+      queryBuilder.andWhere('category.id = :category', { category });
+    }
+
+    if (status) {
+      queryBuilder.andWhere('product.status = :status', { status });
+    }
+
+    const total = await queryBuilder.getCount();
+    const products = await queryBuilder
+      .orderBy('product.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+
+    return {
+      data: products,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  // Orders Management
+  async getAllOrders(page: number = 1, limit: number = 10, search?: string, status?: string, dateFrom?: Date, dateTo?: Date) {
+    const queryBuilder = this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.user', 'user')
+      .leftJoinAndSelect('order.vendor', 'vendor')
+      .leftJoinAndSelect('order.orderItems', 'orderItems')
+      .leftJoinAndSelect('order.payment', 'payment')
+      .select([
+        'order.id',
+        'order.orderNumber',
+        'order.status',
+        'order.paymentStatus',
+        'order.totalAmount',
+        'order.shippingAmount',
+        'order.taxAmount',
+        'order.createdAt',
+        'user.firstName',
+        'user.lastName',
+        'user.email',
+        'vendor.businessName',
+        'payment.status',
+        'payment.paymentGateway',
+      ])
+      .addSelect('COUNT(orderItems.id)', 'itemCount')
+      .groupBy('order.id, user.id, vendor.id, payment.id');
+
+    if (search) {
+      queryBuilder.andWhere(
+        '(order.orderNumber ILIKE :search OR user.firstName ILIKE :search OR user.lastName ILIKE :search OR user.email ILIKE :search)',
+        { search: `%${search}%` }
+      );
+    }
+
+    if (status) {
+      queryBuilder.andWhere('order.status = :status', { status });
+    }
+
+    if (dateFrom) {
+      queryBuilder.andWhere('order.createdAt >= :dateFrom', { dateFrom });
+    }
+
+    if (dateTo) {
+      queryBuilder.andWhere('order.createdAt <= :dateTo', { dateTo });
+    }
+
+    const total = await queryBuilder.getCount();
+    const orders = await queryBuilder
+      .orderBy('order.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getRawAndEntities();
+
+    return {
+      data: orders.entities,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  // Customers Management
+  async getAllCustomers(page: number = 1, limit: number = 10, search?: string, status?: string) {
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.orders', 'orders')
+      .where('user.role = :role', { role: 'customer' })
+      .select([
+        'user.id',
+        'user.firstName',
+        'user.lastName',
+        'user.email',
+        'user.phone',
+        'user.status',
+        'user.emailVerified',
+        'user.phoneVerified',
+        'user.createdAt',
+      ])
+      .addSelect('COUNT(orders.id)', 'orderCount')
+      .addSelect('COALESCE(SUM(orders.totalAmount), 0)', 'totalSpent')
+      .groupBy('user.id');
+
+    if (search) {
+      queryBuilder.andWhere(
+        '(user.firstName ILIKE :search OR user.lastName ILIKE :search OR user.email ILIKE :search OR user.phone ILIKE :search)',
+        { search: `%${search}%` }
+      );
+    }
+
+    if (status) {
+      queryBuilder.andWhere('user.status = :status', { status });
+    }
+
+    const total = await queryBuilder.getCount();
+    const customers = await queryBuilder
+      .orderBy('user.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getRawAndEntities();
+
+    return {
+      data: customers.entities,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  // Categories Management
+  async getAllCategories(page: number = 1, limit: number = 10, search?: string) {
+    const queryBuilder = this.categoryRepository
+      .createQueryBuilder('category')
+      .leftJoin('category.products', 'products')
+      .leftJoin('category.parent', 'parent')
+      .select([
+        'category.id',
+        'category.name',
+        'category.slug',
+        'category.description',
+        'category.isActive',
+        'category.createdAt',
+        'parent.name',
+      ])
+      .addSelect('COUNT(products.id)', 'productCount')
+      .groupBy('category.id, parent.id');
+
+    if (search) {
+      queryBuilder.andWhere(
+        '(category.name ILIKE :search OR category.description ILIKE :search)',
+        { search: `%${search}%` }
+      );
+    }
+
+    const total = await queryBuilder.getCount();
+    const categories = await queryBuilder
+      .orderBy('category.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getRawAndEntities();
+
+    return {
+      data: categories.entities,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  // Financial Reports
+  async getFinancialReports(dateFrom?: Date, dateTo?: Date) {
+    const now = new Date();
+    const startDate = dateFrom || new Date(now.getFullYear(), now.getMonth(), 1);
+    const endDate = dateTo || now;
+
+    // Revenue by period
+    const revenueData = await this.orderRepository
+      .createQueryBuilder('order')
+      .select([
+        'DATE(order.createdAt) as date',
+        'SUM(order.totalAmount) as revenue',
+        'COUNT(order.id) as orderCount',
+      ])
+      .where('order.status = :status', { status: 'delivered' })
+      .andWhere('order.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
+      .groupBy('DATE(order.createdAt)')
+      .orderBy('date', 'ASC')
+      .getRawMany();
+
+    // Commission data
+    const commissionData = await this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoin('order.vendor', 'vendor')
+      .select([
+        'vendor.businessName',
+        'SUM(order.totalAmount * vendor.commissionRate / 100) as commission',
+        'COUNT(order.id) as orderCount',
+      ])
+      .where('order.status = :status', { status: 'delivered' })
+      .andWhere('order.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
+      .groupBy('vendor.id, vendor.businessName')
+      .orderBy('commission', 'DESC')
+      .getRawMany();
+
+    // Payment method breakdown
+    const paymentMethods = await this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoin('order.payment', 'payment')
+      .select([
+        'payment.paymentGateway',
+        'COUNT(order.id) as count',
+        'SUM(order.totalAmount) as amount',
+      ])
+      .where('order.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
+      .groupBy('payment.paymentGateway')
+      .getRawMany();
+
+    // Top selling products
+    const topProducts = await this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoin('order.orderItems', 'orderItems')
+      .leftJoin('orderItems.product', 'product')
+      .select([
+        'product.name',
+        'SUM(orderItems.quantity) as totalSold',
+        'SUM(orderItems.totalPrice) as revenue',
+      ])
+      .where('order.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
+      .groupBy('product.id, product.name')
+      .orderBy('totalSold', 'DESC')
+      .limit(10)
+      .getRawMany();
+
+    return {
+      period: { startDate, endDate },
+      revenue: revenueData,
+      commissions: commissionData,
+      paymentMethods,
+      topProducts,
+    };
+  }
+
+  // Marketing Data
+  async getMarketingData() {
+    // Coupon usage statistics
+    const couponStats = await this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoin('order.coupon', 'coupon')
+      .select([
+        'coupon.code',
+        'coupon.name',
+        'COUNT(order.id) as usageCount',
+        'SUM(order.discountAmount) as totalDiscount',
+      ])
+      .where('coupon.id IS NOT NULL')
+      .groupBy('coupon.id, coupon.code, coupon.name')
+      .orderBy('usageCount', 'DESC')
+      .getRawMany();
+
+    // Customer acquisition by month
+    const customerAcquisition = await this.userRepository
+      .createQueryBuilder('user')
+      .select([
+        'DATE_TRUNC(\'month\', user.createdAt) as month',
+        'COUNT(user.id) as newCustomers',
+      ])
+      .where('user.role = :role', { role: 'customer' })
+      .groupBy('month')
+      .orderBy('month', 'DESC')
+      .limit(12)
+      .getRawMany();
+
+    // Review statistics
+    const reviewStats = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select([
+        'review.rating',
+        'COUNT(review.id) as count',
+      ])
+      .where('review.status = :status', { status: 'approved' })
+      .groupBy('review.rating')
+      .orderBy('review.rating', 'ASC')
+      .getRawMany();
+
+    return {
+      coupons: couponStats,
+      customerAcquisition,
+      reviews: reviewStats,
+    };
+  }
+
+  // Returns and Exchanges
+  async getReturnsAndExchanges(page: number = 1, limit: number = 10, type?: 'return' | 'exchange', status?: string) {
+    let queryBuilder;
+    let total;
+    let data;
+
+    if (type === 'return' || !type) {
+      queryBuilder = this.returnRepository
+        .createQueryBuilder('return')
+        .leftJoinAndSelect('return.orderItem', 'orderItem')
+        .leftJoinAndSelect('orderItem.order', 'order')
+        .leftJoinAndSelect('orderItem.product', 'product')
+        .leftJoinAndSelect('order.user', 'user');
+
+      if (status) {
+        queryBuilder.andWhere('return.status = :status', { status });
+      }
+
+      total = await queryBuilder.getCount();
+      data = await queryBuilder
+        .orderBy('return.createdAt', 'DESC')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getMany();
+    }
+
+    if (type === 'exchange') {
+      queryBuilder = this.exchangeRepository
+        .createQueryBuilder('exchange')
+        .leftJoinAndSelect('exchange.orderItem', 'orderItem')
+        .leftJoinAndSelect('orderItem.order', 'order')
+        .leftJoinAndSelect('orderItem.product', 'product')
+        .leftJoinAndSelect('order.user', 'user');
+
+      if (status) {
+        queryBuilder.andWhere('exchange.status = :status', { status });
+      }
+
+      total = await queryBuilder.getCount();
+      data = await queryBuilder
+        .orderBy('exchange.createdAt', 'DESC')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getMany();
+    }
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 }
