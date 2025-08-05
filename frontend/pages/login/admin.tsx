@@ -100,12 +100,12 @@ const AdminLogin: React.FC = () => {
 
         // Store token and user data using auth utilities
         setAuthData('admin', data.access_token, data.user);
+        console.log('Admin login: Auth data stored', { token: data.access_token, user: data.user });
         
         setSuccess('Admin login successful! Redirecting...');
         // Redirect to admin dashboard after successful login
-        setTimeout(() => {
-          router.push('/admin/dashboard');
-        }, 1000);
+        console.log('Admin login: Attempting redirect to /admin/dashboard');
+        router.replace('/admin/dashboard');
       } else {
         setError(data.message || 'Login failed. Please try again.');
       }

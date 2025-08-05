@@ -22,6 +22,7 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
     const checkAuth = () => {
       // Check if user is authenticated for the required role
       if (!isAuthenticated(requiredRole)) {
+        console.log(`RouteGuard: User not authenticated for role: ${requiredRole}`);
         // Not authenticated for this role, redirect to login
         const loginRoute = fallbackRoute || getLoginRoute(requiredRole);
         router.replace(loginRoute);
@@ -31,6 +32,7 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
       // Get user data to verify role access
       const userData = getUserData(requiredRole);
       if (!userData) {
+        console.log(`RouteGuard: No user data found for role: ${requiredRole}`);
         // No user data found, redirect to login
         const loginRoute = fallbackRoute || getLoginRoute(requiredRole);
         router.replace(loginRoute);
@@ -39,12 +41,14 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
 
       // Check if user has access to this route
       if (!hasRouteAccess(userData.role, requiredRole)) {
+        console.log(`RouteGuard: User role ${userData.role} doesn't have access to ${requiredRole}`);
         // User doesn't have access, redirect to their appropriate dashboard
         const userDashboard = getDashboardRoute(userData.role);
         router.replace(userDashboard);
         return;
       }
 
+      console.log(`RouteGuard: User authorized for role: ${requiredRole}`);
       // User is authorized
       setIsAuthorized(true);
       setIsLoading(false);
@@ -52,7 +56,9 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
 
     // Only run auth check on client side
     if (router.isReady) {
-      checkAuth();
+      // Add a small delay to ensure localStorage is updated
+      const timeoutId = setTimeout(checkAuth, 100);
+      return () => clearTimeout(timeoutId);
     }
   }, [router, requiredRole, fallbackRoute]);
 
