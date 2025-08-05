@@ -29,44 +29,77 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
-    return {
-      type: 'postgres',
-      host: this.configService.get('DATABASE_HOST'),
-      port: this.configService.get('DATABASE_PORT'),
-      username: this.configService.get('DATABASE_USERNAME'),
-      password: this.configService.get('DATABASE_PASSWORD'),
-      database: this.configService.get('DATABASE_NAME'),
-      entities: [
-        User,
-        Vendor,
-        VendorPayout,
-        Return,
-        Exchange,
-        Order,
-        OrderItem,
-        Product,
-        ProductImage,
-        ProductVariant,
-        Category,
-        Review,
-        Cart,
-        CartItem,
-        Wishlist,
-        WishlistItem,
-        Address,
-        Notification,
-        Payment,
-      ],
-      migrations: ['dist/database/migrations/*.js'],
-      synchronize: false,
-      logging: this.configService.get('NODE_ENV') === 'development',
-      ssl: this.configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
-      extra: {
-        connectionLimit: 10,
-        acquireTimeout: 60000,
-        timeout: 60000,
-      },
-    };
+    const isProduction = this.configService.get('NODE_ENV') === 'production';
+    
+    if (isProduction) {
+      return {
+        type: 'postgres',
+        host: this.configService.get('DATABASE_HOST'),
+        port: this.configService.get('DATABASE_PORT'),
+        username: this.configService.get('DATABASE_USERNAME'),
+        password: this.configService.get('DATABASE_PASSWORD'),
+        database: this.configService.get('DATABASE_NAME'),
+        entities: [
+          User,
+          Vendor,
+          VendorPayout,
+          Return,
+          Exchange,
+          Order,
+          OrderItem,
+          Product,
+          ProductImage,
+          ProductVariant,
+          Category,
+          Review,
+          Cart,
+          CartItem,
+          Wishlist,
+          WishlistItem,
+          Address,
+          Notification,
+          Payment,
+        ],
+        migrations: ['dist/database/migrations/*.js'],
+        synchronize: false,
+        logging: this.configService.get('NODE_ENV') === 'development',
+        ssl: this.configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
+        extra: {
+          connectionLimit: 10,
+          acquireTimeout: 60000,
+          timeout: 60000,
+        },
+      };
+    } else {
+      // Development SQLite configuration
+      return {
+        type: 'sqlite',
+        database: './dev-database.sqlite',
+        entities: [
+          User,
+          Vendor,
+          VendorPayout,
+          Return,
+          Exchange,
+          Order,
+          OrderItem,
+          Product,
+          ProductImage,
+          ProductVariant,
+          Category,
+          Review,
+          Cart,
+          CartItem,
+          Wishlist,
+          WishlistItem,
+          Address,
+          Notification,
+          Payment,
+        ],
+        synchronize: true, // Auto-create tables in development
+        logging: true,
+      };
+    }
   }
 }
 
