@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import RouteGuard from '../../components/RouteGuard';
-import AdminDashboardLayout from '../../layouts/AdminDashboardLayout';
+// Layout handled automatically by UnifiedLayout
 import {
   Container,
   Typography,
@@ -393,13 +393,13 @@ const AdminMarketing: NextPage = () => {
   
   return (
     <RouteGuard requiredRole="admin">
-      <AdminDashboardLayout>
+      <>
         <Head>
           <title>Marketing & Promotions - Admin Dashboard</title>
           <meta name="description" content="Manage marketing campaigns and promotions in the admin dashboard" />
         </Head>
         
-        <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Box sx={{ width: '100%' }}>
           {/* Header */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
             <Box>
@@ -770,7 +770,7 @@ const AdminMarketing: NextPage = () => {
               />
             </CardContent>
           </Card>
-        </Container>
+        </Box>
         
         {/* Action Menu */}
         <Menu
@@ -923,7 +923,7 @@ const AdminMarketing: NextPage = () => {
             <Button variant="contained">Edit</Button>
           </DialogActions>
         </Dialog>
-      </AdminDashboardLayout>
+      </>
     </RouteGuard>
   );
 };

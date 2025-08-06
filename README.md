@@ -65,6 +65,15 @@ ROOT/
 - npm or yarn
 - Git
 
+## 🔌 Port Configuration (Local Dev)
+
+**Reserved Ports - NEVER CHANGE:**
+- **Backend API**: `http://localhost:3000`
+- **Web Frontend**: `http://localhost:3001`
+- **Mobile App Preview**: `http://localhost:3002`
+
+> 📋 See [PORTS.md](./PORTS.md) for detailed port configuration documentation.
+
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/my-org/multi-vendor-ecommerce.git

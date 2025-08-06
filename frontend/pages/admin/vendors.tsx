@@ -72,7 +72,7 @@ import {
   People,
   Assessment
 } from '@mui/icons-material';
-import Layout from '../../components/Layout';
+// Layout handled automatically by UnifiedLayout
 import vendorsData from '../../data/vendors.json';
 import ordersData from '../../data/orders.json';
 import productsData from '../../data/products.json';
@@ -346,13 +346,13 @@ const AdminVendors: NextPage = () => {
   );
   
   return (
-    <Layout>
+    <>
       <Head>
         <title>Vendor Management - Admin Dashboard</title>
         <meta name="description" content="Manage vendors on the e-commerce platform" />
       </Head>
       
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box sx={{ width: '100%' }}>
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Box>
@@ -627,7 +627,7 @@ const AdminVendors: NextPage = () => {
             </Box>
           </>
         )}
-      </Container>
+      </Box>
       
       {/* Action Menu */}
       <Menu
@@ -794,7 +794,7 @@ const AdminVendors: NextPage = () => {
           </>
         )}
       </Dialog>
-    </Layout>
+    </>
   );
 };
 

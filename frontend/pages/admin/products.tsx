@@ -80,7 +80,7 @@ import {
   Verified,
   Report
 } from '@mui/icons-material';
-import Layout from '../../components/Layout';
+// Layout handled automatically by UnifiedLayout
 import productsData from '../../data/products.json';
 import vendorsData from '../../data/vendors.json';
 import categoriesData from '../../data/categories.json';
@@ -362,13 +362,13 @@ const AdminProducts: NextPage = () => {
   };
   
   return (
-    <Layout>
+          <>
       <Head>
         <title>Product Management - Admin Dashboard</title>
         <meta name="description" content="Manage all products on the e-commerce platform" />
       </Head>
       
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box sx={{ width: '100%' }}>
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Box>
@@ -734,7 +734,7 @@ const AdminProducts: NextPage = () => {
             </Box>
           </>
         )}
-      </Container>
+      </Box>
       
       {/* Action Menu */}
       <Menu
@@ -911,7 +911,7 @@ const AdminProducts: NextPage = () => {
           </>
         )}
       </Dialog>
-    </Layout>
+          </>
   );
 };
 

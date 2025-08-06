@@ -12,6 +12,7 @@ import { OrdersModule } from '../orders/orders.module';
 import { ReturnsModule } from '../returns/returns.module';
 import { ExchangesModule } from '../exchanges/exchanges.module';
 import { ReviewsModule } from '../reviews/reviews.module';
+import { AuthModule } from '../auth/auth.module';
 
 // Import entities for admin overview
 import { User } from '../users/entities/user.entity';
@@ -39,6 +40,7 @@ import { Analytics } from '../analytics/entities/analytics.entity';
       Commission,
       Analytics,
     ]),
+    AuthModule,
     AnalyticsModule,
     CommissionsModule,
     UsersModule,

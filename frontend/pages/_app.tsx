@@ -19,7 +19,7 @@ import { theme } from '../theme';
 import createEmotionCache from '../utils/createEmotionCache';
 
 // Components
-import Layout from '../components/Layout';
+import UnifiedLayout from '../components/UnifiedLayout';
 import LoadingScreen from '../components/LoadingScreen';
 import ErrorBoundary from '../components/ErrorBoundary';
 
@@ -110,9 +110,9 @@ function MyApp(props: MyAppProps) {
               <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <ErrorBoundary>
-                  <Layout>
+                  <UnifiedLayout>
                     <Component {...pageProps} />
-                  </Layout>
+                  </UnifiedLayout>
                 </ErrorBoundary>
                 
                 {/* Toast notifications */}

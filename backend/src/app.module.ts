@@ -30,6 +30,9 @@ import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { AddressModule } from './modules/address/address.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaymentsModule } from './modules/payments/payments.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { CommissionsModule } from './modules/commissions/commissions.module';
 
 @Module({
   imports: [
@@ -83,6 +86,11 @@ import { PaymentsModule } from './modules/payments/payments.module';
     OrdersModule,
     ReturnsModule,
     ExchangesModule,
+    
+    // Admin modules
+    AdminModule,
+    AnalyticsModule,
+    CommissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

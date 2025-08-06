@@ -37,7 +37,7 @@ interface UIState {
 
 const initialState: UIState = {
   theme: 'light',
-  sidebarOpen: false,
+  sidebarOpen: true, // Default to true for better desktop experience
   mobileMenuOpen: false,
   searchOpen: false,
   cartDrawerOpen: false,

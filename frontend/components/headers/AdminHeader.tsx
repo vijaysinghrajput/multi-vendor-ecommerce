@@ -128,7 +128,12 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
           color="inherit"
           aria-label="toggle sidebar"
           onClick={handleSidebarToggle}
-          sx={{ mr: 2 }}
+          sx={{ 
+            mr: 2,
+            '&:hover': {
+              backgroundColor: theme.palette.action.hover,
+            }
+          }}
         >
           <MenuIcon />
         </IconButton>

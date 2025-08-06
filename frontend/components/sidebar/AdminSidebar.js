@@ -10,6 +10,7 @@ import {
   Typography,
   Box,
   Collapse,
+  Tooltip,
   useTheme,
 } from '@mui/material';
 import {
@@ -32,12 +33,13 @@ import {
   AccountBalance,
   TrendingUp,
   RateReview,
+  AdminPanelSettings,
 } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSidebarOpen } from '../../store/slices/uiSlice';
 
-const AdminSidebar = ({ open, width, isMobile }) => {
+const AdminSidebar = ({ open, width, collapsedWidth = 60, isMobile }) => {
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -247,41 +249,66 @@ const AdminSidebar = ({ open, width, isMobile }) => {
     const isExpanded = expandedItems.includes(item.label);
     const isActive = item.href ? isItemActive(item.href) : false;
     const IconComponent = item.icon;
+    const isCollapsed = !open && !isMobile;
 
-    return (
-      <React.Fragment key={item.label}>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => handleItemClick(item)}
-            sx={{
-              pl: 2 + depth * 2,
-              backgroundColor: isActive ? theme.palette.action.selected : 'transparent',
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-              },
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                color: isActive ? theme.palette.primary.main : 'inherit',
-                minWidth: 40,
-              }}
-            >
-              <IconComponent />
-            </ListItemIcon>
+    const menuItemContent = (
+      <ListItemButton
+        onClick={() => handleItemClick(item)}
+        sx={{
+          pl: isCollapsed ? 1 : 2 + depth * 2,
+          pr: 2,
+          backgroundColor: isActive ? theme.palette.action.selected : 'transparent',
+          justifyContent: isCollapsed ? 'center' : 'flex-start',
+          minHeight: 48,
+          maxWidth: '100%',
+          overflow: 'hidden',
+          '&:hover': {
+            backgroundColor: theme.palette.action.hover,
+          },
+        }}
+      >
+        <ListItemIcon
+          sx={{
+            color: isActive ? theme.palette.primary.main : 'inherit',
+            minWidth: isCollapsed ? 'auto' : 40,
+            mr: isCollapsed ? 0 : 1,
+          }}
+        >
+          <IconComponent />
+        </ListItemIcon>
+        {!isCollapsed && (
+          <>
             <ListItemText
               primary={item.label}
               sx={{
                 color: isActive ? theme.palette.primary.main : 'inherit',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                flex: 1,
               }}
             />
             {item.children && (
               isExpanded ? <ExpandLess /> : <ExpandMore />
             )}
-          </ListItemButton>
+          </>
+        )}
+      </ListItemButton>
+    );
+
+    return (
+      <React.Fragment key={item.label}>
+        <ListItem disablePadding>
+          {isCollapsed ? (
+            <Tooltip title={item.label} placement="right">
+              {menuItemContent}
+            </Tooltip>
+          ) : (
+            menuItemContent
+          )}
         </ListItem>
         
-        {item.children && (
+        {!isCollapsed && item.children && (
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {item.children.map(child => renderMenuItem(child, depth + 1))}
@@ -297,45 +324,56 @@ const AdminSidebar = ({ open, width, isMobile }) => {
       {/* Sidebar Header */}
       <Box
         sx={{
-          p: 2,
+          p: open || isMobile ? 2 : 1,
           borderBottom: `1px solid ${theme.palette.divider}`,
+          textAlign: open || isMobile ? 'left' : 'center',
         }}
       >
-        <Typography variant="h6" component="div" color="primary">
-          Admin Panel
-        </Typography>
+        {(open || isMobile) ? (
+          <Typography variant="h6" component="div" color="primary">
+            Admin Panel
+          </Typography>
+        ) : (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 32 }}>
+            <AdminPanelSettings color="primary" />
+          </Box>
+        )}
       </Box>
 
       {/* Menu Items */}
-      <List>
+      <List sx={{ px: open || isMobile ? 1 : 0.5 }}>
         {menuItems.map(item => renderMenuItem(item))}
       </List>
 
-      <Divider sx={{ my: 2 }} />
+      {(open || isMobile) && (
+        <>
+          <Divider sx={{ my: 2 }} />
 
-      {/* Additional Links */}
-      <Box sx={{ p: 2 }}>
-        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-          Quick Actions
-        </Typography>
-        <List dense>
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => router.push('/admin/backup')}>
-              <ListItemText primary="System Backup" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => router.push('/admin/logs')}>
-              <ListItemText primary="System Logs" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => router.push('/admin/maintenance')}>
-              <ListItemText primary="Maintenance Mode" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Box>
+          {/* Additional Links */}
+          <Box sx={{ p: 2 }}>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              Quick Actions
+            </Typography>
+            <List dense>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => router.push('/admin/backup')}>
+                  <ListItemText primary="System Backup" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => router.push('/admin/logs')}>
+                  <ListItemText primary="System Logs" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => router.push('/admin/maintenance')}>
+                  <ListItemText primary="Maintenance Mode" />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Box>
+        </>
+      )}
     </Box>
   );
 
@@ -343,17 +381,41 @@ const AdminSidebar = ({ open, width, isMobile }) => {
     <Drawer
       variant={isMobile ? 'temporary' : 'persistent'}
       anchor="left"
-      open={open}
+      open={open} // Responsive open state for all screen sizes
       onClose={handleDrawerClose}
       sx={{
-        width: open ? width : 0,
+        width: open ? width : (isMobile ? 0 : collapsedWidth),
         flexShrink: 0,
+        whiteSpace: 'nowrap',
+        zIndex: theme.zIndex.drawer,
         '& .MuiDrawer-paper': {
-          width: width,
+          width: open ? width : (isMobile ? width : collapsedWidth),
           boxSizing: 'border-box',
           top: isMobile ? 0 : 64, // Account for header height
           height: isMobile ? '100%' : 'calc(100% - 64px)',
           borderRight: `1px solid ${theme.palette.divider}`,
+          backgroundColor: theme.palette.background.paper,
+          transition: theme.transitions.create(['width'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: theme.transitions.duration.standard,
+          }),
+          overflowX: 'hidden',
+          overflowY: 'auto',
+          whiteSpace: 'nowrap', // Prevent text wrapping
+          // Custom scrollbar styling
+          '&::-webkit-scrollbar': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: theme.palette.action.disabled,
+            borderRadius: '3px',
+            '&:hover': {
+              backgroundColor: theme.palette.action.hover,
+            },
+          },
         },
       }}
       ModalProps={{

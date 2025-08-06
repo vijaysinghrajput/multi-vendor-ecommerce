@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import RouteGuard from '../../components/RouteGuard';
 import { getUserData, logout, getAuthToken } from '../../utils/auth';
-import AdminDashboardLayout from '../../layouts/AdminDashboardLayout';
+// Layout handled automatically by UnifiedLayout
 import {
   Container,
   Typography,
@@ -142,25 +142,43 @@ const AdminDashboard: NextPage = () => {
         headers.Authorization = `Bearer ${token}`;
       }
       
-      // Fetch dashboard stats
-      const statsResponse = await fetch(`${apiUrl}/admin/dashboard/stats`, { headers });
-      if (statsResponse.ok) {
-        const stats = await statsResponse.json();
-        setDashboardStats(stats);
+      // Fetch dashboard stats with error handling
+      try {
+        const statsResponse = await fetch(`${apiUrl}/admin/dashboard/stats`, { headers });
+        if (statsResponse.ok) {
+          const stats = await statsResponse.json();
+          setDashboardStats(stats);
+        } else {
+          console.warn('Dashboard stats endpoint not available yet');
+        }
+      } catch (statsError) {
+        console.warn('Failed to fetch dashboard stats:', statsError);
       }
       
-      // Fetch recent activity
-      const activityResponse = await fetch(`${apiUrl}/admin/dashboard/recent-activity`, { headers });
-      if (activityResponse.ok) {
-        const activity = await activityResponse.json();
-        setRecentActivity(Array.isArray(activity) ? activity : []);
+      // Fetch recent activity with error handling
+      try {
+        const activityResponse = await fetch(`${apiUrl}/admin/dashboard/recent-activity`, { headers });
+        if (activityResponse.ok) {
+          const activity = await activityResponse.json();
+          setRecentActivity(Array.isArray(activity) ? activity : []);
+        } else {
+          console.warn('Recent activity endpoint not available yet');
+        }
+      } catch (activityError) {
+        console.warn('Failed to fetch recent activity:', activityError);
       }
       
-      // Fetch recent orders
-      const ordersResponse = await fetch(`${apiUrl}/admin/orders?limit=5`, { headers });
-      if (ordersResponse.ok) {
-        const ordersData = await ordersResponse.json();
-        setRecentOrders(ordersData.data || []);
+      // Fetch recent orders with error handling
+      try {
+        const ordersResponse = await fetch(`${apiUrl}/admin/orders?limit=5`, { headers });
+        if (ordersResponse.ok) {
+          const ordersData = await ordersResponse.json();
+          setRecentOrders(ordersData.data || []);
+        } else {
+          console.warn('Orders endpoint not available yet');
+        }
+      } catch (ordersError) {
+        console.warn('Failed to fetch recent orders:', ordersError);
       }
       
     } catch (error) {
@@ -198,24 +216,37 @@ const AdminDashboard: NextPage = () => {
   
   return (
     <RouteGuard requiredRole="admin">
-      <AdminDashboardLayout>
         <Head>
           <title>Admin Dashboard - E-commerce Platform</title>
           <meta name="description" content="Admin dashboard for multi-vendor e-commerce platform" />
         </Head>
       
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box sx={{ width: '100%' }}>
         {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between', 
+          alignItems: { xs: 'flex-start', sm: 'center' }, 
+          mb: { xs: 3, sm: 4 },
+          gap: { xs: 2, sm: 0 }
+        }}>
           <Box>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 1 }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: { xs: '1.5rem', sm: '2rem' } // Responsive font size instead of variant
+              }}
+            >
               Admin Dashboard
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Welcome back! Here's what's happening with your platform.
             </Typography>
           </Box>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
+          <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 120 } }}>
             <InputLabel>Time Range</InputLabel>
             <Select
               value={timeRange}
@@ -231,8 +262,8 @@ const AdminDashboard: NextPage = () => {
         </Box>
         
         {/* Metrics Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={3}>
+        <Grid container spacing={{ xs: 2, sm: 3 }} sx={{ mb: 0 }}>
+          <Grid item xs={12} sm={6} lg={3}>
             <MetricCard
               title="Total Revenue"
               value={loading ? "Loading..." : formatCurrency(stats.orders?.totalRevenue || 0)}
@@ -241,7 +272,7 @@ const AdminDashboard: NextPage = () => {
               color="success"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} lg={3}>
             <MetricCard
               title="Total Orders"
               value={loading ? "Loading..." : (stats.orders?.total || 0).toLocaleString()}
@@ -250,7 +281,7 @@ const AdminDashboard: NextPage = () => {
               color="primary"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} lg={3}>
             <MetricCard
               title="Active Vendors"
               value={loading ? "Loading..." : `${stats.vendors?.approved || 0}/${stats.vendors?.total || 0}`}
@@ -259,7 +290,7 @@ const AdminDashboard: NextPage = () => {
               color="primary"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} lg={3}>
             <MetricCard
               title="Total Customers"
               value={loading ? "Loading..." : (stats.users?.customers || 0).toLocaleString()}
@@ -270,9 +301,9 @@ const AdminDashboard: NextPage = () => {
           </Grid>
         </Grid>
         
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2, sm: 3 }}>
           {/* Recent Orders */}
-          <Grid item xs={12} lg={8}>
+          <Grid item xs={12} xl={8}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -365,7 +396,7 @@ const AdminDashboard: NextPage = () => {
           </Grid>
           
           {/* Recent Activities */}
-          <Grid item xs={12} lg={4}>
+          <Grid item xs={12} xl={4}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
@@ -488,33 +519,29 @@ const AdminDashboard: NextPage = () => {
                               V{index + 1}
                             </Avatar>
                           </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                                  Vendor {index + 1}
-                                </Typography>
-                                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                                  {formatCurrency(Math.floor(Math.random() * 100000) + 50000)}
+                          <Box sx={{ width: '100%' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                                Vendor {index + 1}
+                              </Typography>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                                {formatCurrency(Math.floor(Math.random() * 100000) + 50000)}
+                              </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Star sx={{ fontSize: 16, color: 'warning.main', mr: 0.5 }} />
+                                <Typography variant="caption">
+                                  {(4.0 + Math.random()).toFixed(1)} • {Math.floor(Math.random() * 100) + 10} orders
                                 </Typography>
                               </Box>
-                            }
-                            secondary={
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                  <Star sx={{ fontSize: 16, color: 'warning.main', mr: 0.5 }} />
-                                  <Typography variant="caption">
-                                    {(4.0 + Math.random()).toFixed(1)} • {Math.floor(Math.random() * 100) + 10} orders
-                                  </Typography>
-                                </Box>
-                                <LinearProgress
-                                  variant="determinate"
-                                  value={100 - (index * 20)}
-                                  sx={{ width: 60, height: 4, borderRadius: 2 }}
-                                />
-                              </Box>
-                            }
-                          />
+                              <LinearProgress
+                                variant="determinate"
+                                value={100 - (index * 20)}
+                                sx={{ width: 60, height: 4, borderRadius: 2 }}
+                              />
+                            </Box>
+                          </Box>
                         </ListItem>
                         {index < 4 && <Divider />}
                       </React.Fragment>
@@ -657,8 +684,7 @@ const AdminDashboard: NextPage = () => {
             </Card>
           </Grid>
         </Grid>
-      </Container>
-      </AdminDashboardLayout>
+      </Box>
     </RouteGuard>
   );
 };

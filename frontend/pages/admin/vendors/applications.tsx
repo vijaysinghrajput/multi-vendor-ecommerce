@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import RouteGuard from '../../../components/RouteGuard';
-import AdminDashboardLayout from '../../../layouts/AdminDashboardLayout';
+import AdminLayout from '../../../layouts/AdminLayout';
 import {
   Container,
   Typography,
@@ -281,7 +281,7 @@ const AdminVendorApplications: NextPage = () => {
   
   return (
     <RouteGuard requiredRole="admin">
-      <AdminDashboardLayout>
+      <AdminLayout>
         <Head>
           <title>Vendor Applications - Admin Dashboard</title>
           <meta name="description" content="Manage vendor applications in the admin dashboard" />
@@ -780,7 +780,7 @@ const AdminVendorApplications: NextPage = () => {
             </Button>
           </DialogActions>
         </Dialog>
-      </AdminDashboardLayout>
+      </AdminLayout>
     </RouteGuard>
   );
 };

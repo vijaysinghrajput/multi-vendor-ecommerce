@@ -82,7 +82,7 @@ import {
   CreditCard,
   LocalOffer
 } from '@mui/icons-material';
-import Layout from '../../components/Layout';
+// Layout handled automatically by UnifiedLayout
 import ordersData from '../../data/orders.json';
 import productsData from '../../data/products.json';
 import vendorsData from '../../data/vendors.json';
@@ -357,13 +357,13 @@ const AdminOrders: NextPage = () => {
   };
   
   return (
-    <Layout>
+    <>
       <Head>
         <title>Order Management - Admin Dashboard</title>
         <meta name="description" content="Manage all orders on the e-commerce platform" />
       </Head>
       
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box sx={{ width: '100%' }}>
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Box>
@@ -773,7 +773,7 @@ const AdminOrders: NextPage = () => {
             }}
           />
         </Paper>
-      </Container>
+      </Box>
       
       {/* Action Menu */}
       <Menu
@@ -1003,7 +1003,7 @@ const AdminOrders: NextPage = () => {
           </>
         )}
       </Dialog>
-    </Layout>
+    </>
   );
 };
 

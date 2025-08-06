@@ -92,7 +92,7 @@ import {
   Palette,
   Inventory
 } from '@mui/icons-material';
-import Layout from '../../components/Layout';
+// Layout handled automatically by UnifiedLayout
 import categoriesData from '../../data/categories.json';
 import productsData from '../../data/products.json';
 
@@ -505,13 +505,13 @@ const AdminCategories: NextPage = () => {
   };
   
   return (
-    <Layout>
+          <>
       <Head>
         <title>Category Management - Admin Dashboard</title>
         <meta name="description" content="Manage product categories on the e-commerce platform" />
       </Head>
       
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Box sx={{ width: '100%' }}>
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Box>
@@ -817,7 +817,7 @@ const AdminCategories: NextPage = () => {
             />
           </Paper>
         )}
-      </Container>
+      </Box>
       
       {/* Floating Action Button */}
       <Fab
@@ -1135,7 +1135,7 @@ const AdminCategories: NextPage = () => {
           </>
         )}
       </Dialog>
-    </Layout>
+          </>
   );
 };
 
