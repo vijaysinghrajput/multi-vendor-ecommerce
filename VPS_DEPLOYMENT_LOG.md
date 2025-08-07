@@ -88,6 +88,19 @@ repository: 'https://github.com/vijaysinghrajput/multi-vendor-ecommerce'
 - **Solution**: Updated proxy_pass to `http://localhost:3001/api/v1/` to match backend routing
 - **Result**: Domain URL now returns proper API response with updated GitHub repository
 
+### ✅ SSL/HTTPS Certificate Setup
+- **Issue**: Production frontend on Vercel requires HTTPS but server only had HTTP
+- **Solution**: Installed Let's Encrypt SSL certificate using certbot
+- **Command**: `certbot --nginx -d node-api.skyablyitsolution.com`
+- **Result**: HTTPS now working at `https://node-api.skyablyitsolution.com/wise-lifescience/api/v1/`
+- **Frontend Config**: Updated `.env.production` to use HTTPS API URL
+
+### ✅ PWA Manifest.json Fix
+- **Issue**: Missing icons causing 404 errors in production
+- **Solution**: Created SVG icon and updated manifest.json
+- **Files Added**: `/public/icons/icon.svg`, updated manifest.json
+- **Result**: PWA manifest now loads correctly without 404 errors
+
 ### API Endpoints Verified
 - `GET /api/v1/` - Health check ✅
 - `GET /api/v1/health` - Detailed health info ✅
