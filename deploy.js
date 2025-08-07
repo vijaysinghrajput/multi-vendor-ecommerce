@@ -214,7 +214,7 @@ function backupDatabase() {
   }
 }
 
-// Function to sync database
+// Function to sync database using the new database deployment script
 function syncDatabase() {
   logStep('DB', 'Synchronizing database');
   
@@ -223,42 +223,90 @@ function syncDatabase() {
     return;
   }
   
-  const clientConfig = getClientConfig();
-  
   try {
-    // Backup database before sync if enabled
-    if (DB_CONFIG.sync.backupBeforeSync) {
-      backupDatabase();
-    }
+    // Use the dedicated database deployment script
+    const dbDeployScript = path.join(__dirname, 'scripts', 'deploy-database.js');
     
-    // Upload SQL files if enabled
-    if (DB_CONFIG.sync.uploadSqlFiles) {
-      const sqlFile = path.join(__dirname, 'backend', DB_CONFIG.sync.sqlFile);
-      if (fs.existsSync(sqlFile)) {
-        log(`Uploading ${DB_CONFIG.sync.sqlFile}...`, 'blue');
+    if (fs.existsSync(dbDeployScript)) {
+      log('Running comprehensive database deployment...', 'blue');
+      
+      // Set environment variables for database deployment
+      const dbEnv = {
+        ...process.env,
+        DB_BACKUP_BEFORE_SYNC: DB_CONFIG.sync.backupBeforeSync ? 'true' : 'false',
+        DB_SYNC_SCHEMA: 'true',
+        DB_SYNC_DATA: process.env.DB_SYNC_DATA || 'false',
+        DB_RUN_MIGRATIONS: 'true',
+        DB_CREATE_TABLES: 'true',
+        DB_INSERT_SEED_DATA: process.env.DB_INSERT_SEED_DATA || 'false'
+      };
+      
+      executeLocalCommand(
+        `node ${dbDeployScript}`,
+        'Deploy database schema and data',
+        { env: dbEnv }
+      );
+      
+      logSuccess('Database deployment completed successfully');
+    } else {
+      // Fallback to original database sync logic
+      logWarning('Database deployment script not found, using fallback method');
+      
+      const clientConfig = getClientConfig();
+      
+      // Backup database before sync if enabled
+      if (DB_CONFIG.sync.backupBeforeSync) {
+        backupDatabase();
+      }
+      
+      // Upload and execute schema.sql
+      const schemaFile = path.join(__dirname, 'backend', 'schema.sql');
+      if (fs.existsSync(schemaFile)) {
+        log('Uploading schema.sql...', 'blue');
         
         const sshCommand = config.security.useSSHKeys && config.security.sshKeyPath
           ? `scp -i ${config.security.sshKeyPath} -o StrictHostKeyChecking=no`
           : `sshpass -p '${SERVER_CONFIG.password}' scp -o StrictHostKeyChecking=no`;
         
         executeLocalCommand(
-          `${sshCommand} ${sqlFile} ${SERVER_CONFIG.username}@${SERVER_CONFIG.host}:${clientConfig.backendPath}/`,
-          'Upload SQL file'
+          `${sshCommand} ${schemaFile} ${SERVER_CONFIG.username}@${SERVER_CONFIG.host}:${clientConfig.backendPath}/`,
+          'Upload schema file'
         );
         
-        logSuccess('SQL file uploaded');
-      } else {
-        logWarning(`SQL file ${DB_CONFIG.sync.sqlFile} not found`);
+        // Execute schema file
+        try {
+          executeSSHCommand(
+            `cd ${clientConfig.backendPath} && PGPASSWORD='${process.env.PROD_DB_PASSWORD || 'Skyably@411'}' psql -h localhost -U ${process.env.PROD_DB_USERNAME || 'developer1'} -d ${clientConfig.dbName || 'wise_lifescience'} -f schema.sql`,
+            'Execute schema file'
+          );
+          logSuccess('Schema file executed');
+        } catch (error) {
+          logWarning('Schema execution failed, continuing...');
+        }
       }
-    }
-    
-    // Run SQL files if enabled
-    if (DB_CONFIG.sync.runSqlFiles) {
-      executeSSHCommand(
-        `cd ${clientConfig.backendPath} && psql ${clientConfig.dbName || 'postgres'} < ${DB_CONFIG.sync.sqlFile}`,
-        'Execute SQL file'
-      );
-      logSuccess('SQL file executed');
+      
+      // Upload and execute create-admin.sql if exists
+      const adminFile = path.join(__dirname, 'backend', 'create-admin.sql');
+      if (fs.existsSync(adminFile)) {
+        const sshCommand = config.security.useSSHKeys && config.security.sshKeyPath
+          ? `scp -i ${config.security.sshKeyPath} -o StrictHostKeyChecking=no`
+          : `sshpass -p '${SERVER_CONFIG.password}' scp -o StrictHostKeyChecking=no`;
+        
+        executeLocalCommand(
+          `${sshCommand} ${adminFile} ${SERVER_CONFIG.username}@${SERVER_CONFIG.host}:${clientConfig.backendPath}/`,
+          'Upload admin creation file'
+        );
+        
+        try {
+          executeSSHCommand(
+            `cd ${clientConfig.backendPath} && PGPASSWORD='${process.env.PROD_DB_PASSWORD || 'Skyably@411'}' psql -h localhost -U ${process.env.PROD_DB_USERNAME || 'developer1'} -d ${clientConfig.dbName || 'wise_lifescience'} -f create-admin.sql`,
+            'Create admin user'
+          );
+          logSuccess('Admin user created');
+        } catch (error) {
+          logWarning('Admin user creation failed, continuing...');
+        }
+      }
     }
     
     logSuccess('Database synchronization completed');

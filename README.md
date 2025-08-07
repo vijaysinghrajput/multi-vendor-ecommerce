@@ -57,6 +57,28 @@ ROOT/
 └── README.md
 ```
 
+## 🚀 Quick Start
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/vijaysinghrajput/multi-vendor-ecommerce.git
+cd multi-vendor-ecommerce
+
+# 2. Install dependencies
+npm run setup
+
+# 3. Configure environment variables
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+cp .env.database.example .env.database
+
+# 4. Start development servers
+npm run dev:full
+
+# 5. Deploy to production (when ready)
+npm run deploy:full
+```
+
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
@@ -228,7 +250,108 @@ npm run test          # Jest tests
 npm run test:watch    # Watch mode 
 ```
 
-## 🚀 Deployment
+## 📦 Available Scripts
+
+```bash
+# Development
+npm run dev:backend      # Start backend development server
+npm run dev:frontend     # Start frontend development server
+npm run dev:full         # Start both backend and frontend
+
+# Building
+npm run build:backend    # Build backend for production
+npm run build:frontend   # Build frontend for production
+
+# Database Deployment
+npm run deploy:db        # Deploy database schema and migrations
+npm run deploy:db:schema # Deploy only database schema
+npm run deploy:db:data   # Deploy database data (use with caution)
+npm run deploy:db:migrations # Run only TypeORM migrations
+npm run deploy:db:seed   # Insert seed data (admin user, demo data)
+
+# Full Deployment
+npm run deploy:full      # Deploy database + application (recommended)
+npm run deploy           # Deploy application (includes database sync)
+npm run deploy:dry-run   # Preview deployment without executing
+npm run deploy:help      # Show deployment help
+```
+
+## 🗄️ Database Deployment & Development-Production Correlation
+
+This project features an advanced database deployment system that automatically correlates your development database with production when you deploy to the server.
+
+### 🎯 Key Features
+
+- **Automatic Schema Sync**: Your development database schema is automatically deployed to production
+- **Migration Management**: TypeORM migrations run automatically during deployment
+- **Backup Protection**: Production database is backed up before any changes
+- **Seed Data**: Automatically creates admin users and demo data
+- **Verification**: Ensures deployment success with health checks
+
+### ⚡ Quick Database Deployment
+
+```bash
+# Configure database settings (one-time setup)
+cp .env.database.example .env.database
+nano .env.database
+
+# Deploy everything (database + application)
+npm run deploy:full
+
+# Or deploy database only
+npm run deploy:db
+```
+
+### 🔄 Development to Production Workflow
+
+1. **Develop Locally**: Make changes to your local database
+2. **Create Migrations**: Generate TypeORM migrations for schema changes
+3. **Deploy**: Run `npm run deploy:full` to sync everything to production
+4. **Verify**: Check that your changes are live on the server
+
+```bash
+# Example workflow
+cd backend
+npm run migration:generate -- -n AddNewFeature
+npm run migration:run  # Test locally
+cd ..
+npm run deploy:full    # Deploy to production
+```
+
+### 📋 Database Deployment Options
+
+```bash
+npm run deploy:db:schema     # Deploy only database schema
+npm run deploy:db:migrations # Run only TypeORM migrations
+npm run deploy:db:data       # Sync data from development (use with caution)
+npm run deploy:db:seed       # Insert admin user and demo data
+```
+
+For detailed database deployment instructions, see [DATABASE_DEPLOYMENT_GUIDE.md](DATABASE_DEPLOYMENT_GUIDE.md).
+
+## 🚀 Application Deployment
+
+This project includes automated deployment scripts for easy production deployment.
+
+### Quick Deploy
+
+```bash
+# Deploy everything (recommended)
+npm run deploy:full
+
+# Deploy application only
+npm run deploy
+```
+
+### Deployment Options
+
+```bash
+npm run deploy:dry-run   # Preview what will be deployed
+npm run deploy:help      # Show deployment options
+npm run deploy:config    # Show current configuration
+```
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ### Production Build
 ```bash

@@ -8,7 +8,7 @@ module.exports = {
     username: process.env.DEPLOY_USER || 'developer1',
     password: process.env.DEPLOY_PASS || 'Skyably@411',
     port: parseInt(process.env.DEPLOY_PORT) || 22, // SSH port
-    backendPath: process.env.DEPLOY_BACKEND_PATH || '/var/www/wise-lifescience/backend',
+    backendPath: process.env.DEPLOY_BACKEND_PATH || '/var/www/clients/wise-lifescience/backend',
     serverPort: parseInt(process.env.DEPLOY_SERVER_PORT) || 3000 // Application port
   },
 
@@ -256,7 +256,7 @@ module.exports = {
     basePath: process.env.MULTI_CLIENT_BASE_PATH || '/var/www',
     clientFolders: {
       'wise-lifescience': {
-        backendPath: '/var/www/wise-lifescience/backend',
+        backendPath: '/var/www/clients/wise-lifescience/backend',
         pm2Name: 'wise-lifescience-api',
         port: 3000,
         dbName: 'wise_lifescience'
