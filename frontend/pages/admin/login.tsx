@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import Head from 'next/head';
+import { apiClient } from '../../services/api/client';
 
 interface LoginForm {
   email: string;
@@ -83,17 +84,10 @@ const AdminLogin: React.FC = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/admin-login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await apiClient.post('/auth/admin-login', formData);
+      const data: ApiResponse = response.data;
 
-      const data: ApiResponse = await response.json();
-
-      if (response.ok && data.data && data.data.accessToken && data.data.user) {
+      if (data.data && data.data.accessToken && data.data.user) {
         const accessToken = data.data.accessToken;
         const user = data.data.user;
         // Ensure user has correct role
@@ -115,9 +109,9 @@ const AdminLogin: React.FC = () => {
       } else {
         setError(data.message || 'Login failed. Please try again.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Admin login error:', err);
-      setError('Network error. Please check your connection and try again.');
+      setError(err.response?.data?.message || 'Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }

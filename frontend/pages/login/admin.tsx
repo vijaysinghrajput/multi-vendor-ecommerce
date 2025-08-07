@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { setAuthData, isAuthenticated, getDashboardRoute } from '../../utils/auth';
 import {
@@ -26,6 +26,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import Head from 'next/head';
 import Link from 'next/link';
+import { apiClient } from '../../services/api/client';
 
 interface LoginForm {
   email: string;
@@ -86,37 +87,34 @@ const AdminLogin: React.FC = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/admin-login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await apiClient.post('/auth/admin-login', formData);
+      const data: ApiResponse = response.data;
 
-      const data: ApiResponse = await response.json();
-
-      if (response.ok && data.data && data.data.accessToken && data.data.user) {
+      if (data.data && data.data.accessToken && data.data.user) {
+        const accessToken = data.data.accessToken;
+        const user = data.data.user;
         // Ensure user has correct role
-        if (data.data.user.role !== 'admin') {
+        if (user.role !== 'admin') {
           setError('Invalid credentials. Please use the correct login portal for your account type.');
           return;
         }
 
         // Store token and user data using auth utilities
-        setAuthData('admin', data.data.accessToken, data.data.user);
-        console.log('Admin login: Auth data stored', { token: data.data.accessToken, user: data.data.user });
+        setAuthData('admin', accessToken, user);
         
         setSuccess('Admin login successful! Redirecting...');
-        // Redirect to admin dashboard after successful login
-        console.log('Admin login: Attempting redirect to /admin/dashboard');
-        router.replace('/admin/dashboard');
+        
+        // Immediate redirect with fallback
+        router.replace('/admin/dashboard').catch(() => {
+          // Fallback if router.replace fails
+          window.location.href = '/admin/dashboard';
+        });
       } else {
         setError(data.message || 'Login failed. Please try again.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Admin login error:', err);
-      setError('Network error. Please check your connection and try again.');
+      setError(err.response?.data?.message || 'Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
