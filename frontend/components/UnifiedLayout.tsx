@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import AdminLayout from '../layouts/AdminLayout';
-import Layout from '../components/Layout';
+import Layout from './Layout';
 
 interface UnifiedLayoutProps {
   children: React.ReactNode;
