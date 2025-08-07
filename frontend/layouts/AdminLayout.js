@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { Box, Container, useTheme, useMediaQuery } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { setIsMobile, setSidebarOpen } from '../store/slices/uiSlice';
-import AdminHeader from '../components/headers/AdminHeader';
-import AdminFooter from '../components/layout/AdminFooter';
-import AdminSidebar from '../components/sidebar/AdminSidebar';
-import LoadingOverlay from '../components/common/LoadingOverlay';
-import NotificationSnackbar from '../components/common/NotificationSnackbar';
+import AdminHeader from '../components/headers/AdminHeader.tsx';
+import AdminFooter from '../components/layout/AdminFooter.jsx';
+import AdminSidebar from '../components/sidebar/AdminSidebar.js';
+import LoadingOverlay from '../components/common/LoadingOverlay.tsx';
+import NotificationSnackbar from '../components/common/NotificationSnackbar.tsx';
 
 const AdminLayout = ({
   children,
