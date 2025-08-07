@@ -28,7 +28,19 @@ import {
 } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 
-const AdminHeader = ({ 
+interface AdminHeaderProps {
+  drawerWidth?: number;
+  handleDrawerToggle?: () => void;
+  darkMode?: boolean;
+  onToggleDarkMode?: () => void;
+  adminUser?: {
+    name: string;
+    email: string;
+    role: string;
+  };
+}
+
+const AdminHeader: React.FC<AdminHeaderProps> = ({ 
   drawerWidth = 240, 
   handleDrawerToggle, 
   darkMode, 
@@ -39,8 +51,8 @@ const AdminHeader = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();
   
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [notificationAnchor, setNotificationAnchor] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [notificationAnchor, setNotificationAnchor] = useState<HTMLElement | null>(null);
   
   // Mock notification data
   const [notifications] = useState([
@@ -51,7 +63,7 @@ const AdminHeader = ({
   
   const unreadCount = notifications.filter(n => n.unread).length;
 
-  const handleProfileMenuOpen = (event) => {
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -59,7 +71,7 @@ const AdminHeader = ({
     setAnchorEl(null);
   };
 
-  const handleNotificationOpen = (event) => {
+  const handleNotificationOpen = (event: React.MouseEvent<HTMLElement>) => {
     setNotificationAnchor(event.currentTarget);
   };
 
@@ -88,7 +100,7 @@ const AdminHeader = ({
   };
 
   // Generate avatar initials
-  const getInitials = (name) => {
+  const getInitials = (name: string) => {
     return name
       .split(' ')
       .map(word => word.charAt(0))
