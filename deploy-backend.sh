@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-SERVER_HOST="31.97.207.193"
+SERVER_HOST="node-api.skyablyitsolution.com"
 SERVER_USER="root"
 PROJECT_PATH="/var/www/multi-vendor-ecommerce"
 BACKEND_PATH="$PROJECT_PATH/backend"

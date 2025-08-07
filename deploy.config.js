@@ -4,7 +4,7 @@
 module.exports = {
   // Server Configuration
   server: {
-    host: process.env.DEPLOY_HOST || '31.97.207.193',
+    host: process.env.DEPLOY_HOST || 'node-api.skyablyitsolution.com',
     username: process.env.DEPLOY_USER || 'developer1',
     password: process.env.DEPLOY_PASS || 'Skyably@411',
     port: parseInt(process.env.DEPLOY_PORT) || 22, // SSH port

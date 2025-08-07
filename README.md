@@ -76,7 +76,7 @@ ROOT/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/my-org/multi-vendor-ecommerce.git
+git clone https://github.com/vijaysinghrajput/multi-vendor-ecommerce.git
 cd multi-vendor-ecommerce
 ```
 

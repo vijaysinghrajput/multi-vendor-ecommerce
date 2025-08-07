@@ -48,8 +48,8 @@ export class AppService {
       description: 'Complete multi-vendor e-commerce platform API',
       author: 'Your Company',
       license: 'MIT',
-      repository: 'https://github.com/yourcompany/multi-vendor-ecommerce',
-      documentation: `${this.configService.get('APP_URL')}/api/docs`,
+      repository: 'https://github.com/vijaysinghrajput/multi-vendor-ecommerce',
+      documentation: `${this.configService.get('APP_URL') || `http://localhost:${this.configService.get('PORT') || 3000}`}/api/docs`,
       timestamp: new Date().toISOString(),
     };
   }

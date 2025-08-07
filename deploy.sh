@@ -14,10 +14,10 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Server configuration
-SERVER_HOST="31.97.207.193"
+SERVER_HOST="node-api.skyablyitsolution.com"
 SERVER_USER="developer1"
 SERVER_PASS="Skyably@411"
-BACKEND_PATH="/var/www/wise-lifescience/backend"
+BACKEND_PATH="/var/www/clients/wise-lifescience/backend"
 SERVER_PORT="3000"
 APP_NAME="backend-app"
 

@@ -46,7 +46,7 @@ By participating in this project, you agree to abide by our Code of Conduct:
 
 3. Add upstream remote:
    ```bash
-   git remote add upstream https://github.com/my-org/multi-vendor-ecommerce.git
+   git remote add upstream https://github.com/vijaysinghrajput/multi-vendor-ecommerce.git
    ```
 
 4. Install dependencies:

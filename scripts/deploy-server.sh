@@ -19,7 +19,7 @@ if [ -f ".env.deploy" ]; then
 fi
 
 # Default configuration (can be overridden by .env.deploy)
-SERVER_HOST="${DEPLOY_HOST:-31.97.207.193}"
+SERVER_HOST="${DEPLOY_HOST:-node-api.skyablyitsolution.com}"
 SERVER_USER="${DEPLOY_USER:-developer1}"
 SERVER_PASS="${DEPLOY_PASS:-Skyably@411}"
 SERVER_PORT="${DEPLOY_PORT:-22}"
