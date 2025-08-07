@@ -4,8 +4,13 @@ import { clearAuth, refreshAccessToken } from '../../store/slices/authSlice';
 import toast from 'react-hot-toast';
 
 // Create axios instance
+// Ensure baseURL doesn't end with slash to prevent double slashes
+const baseURL = process.env.NEXT_PUBLIC_API_URL?.endsWith('/') 
+  ? process.env.NEXT_PUBLIC_API_URL.slice(0, -1) 
+  : process.env.NEXT_PUBLIC_API_URL;
+
 export const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: baseURL,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
