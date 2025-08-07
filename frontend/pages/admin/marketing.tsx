@@ -672,7 +672,7 @@ const AdminMarketing: NextPage = () => {
                                   {'name' in item ? item.name : item.title}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                  {'description' in item ? item.description : item.code}
+                                  {'description' in item ? item.description : (item as Promotion).code}
                                 </Typography>
                               </Box>
                             </Box>
