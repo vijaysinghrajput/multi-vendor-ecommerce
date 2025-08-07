@@ -9,6 +9,11 @@ const baseURL = process.env.NEXT_PUBLIC_API_URL?.endsWith('/')
   ? process.env.NEXT_PUBLIC_API_URL.slice(0, -1) 
   : process.env.NEXT_PUBLIC_API_URL;
 
+// Debug log for production
+if (process.env.NODE_ENV === 'production') {
+  console.log('API Base URL:', baseURL);
+}
+
 export const apiClient: AxiosInstance = axios.create({
   baseURL: baseURL,
   timeout: 30000,

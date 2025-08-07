@@ -42,12 +42,18 @@ async function bootstrap() {
   );
 
   // CORS configuration
-  const corsOrigins = configService.get('CORS_ORIGIN')?.split(',') || ['http://localhost:3001'];
+  const corsOrigins = configService.get('CORS_ORIGIN')?.split(',') || [
+    'http://localhost:3001',
+    'https://multi-vendor-ecommerce-frontend-tau.vercel.app',
+    'https://wise-lifescience.vercel.app',
+    'https://*.vercel.app'
+  ];
   app.enableCors({
     origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Request-ID'],
+    exposedHeaders: ['Content-Length', 'X-Request-ID'],
   });
 
   // API prefix
