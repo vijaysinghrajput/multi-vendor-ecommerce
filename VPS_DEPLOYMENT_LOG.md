@@ -76,15 +76,17 @@ repository: 'https://github.com/vijaysinghrajput/multi-vendor-ecommerce'
 
 #### ✅ Working
 - Backend API accessible via direct IP: http://31.97.207.193:3001/api/v1
+- **Domain API now working**: http://node-api.skyablyitsolution.com/wise-lifescience/api/v1
 - PM2 process running successfully
 - All endpoints responding correctly
 - GitHub repository URL updated
 - Local development environment running
+- **NGINX routing fixed**: Proper proxy configuration implemented
 
-#### ⚠️ Issues
-- NGINX domain routing has double prefix issue
-- Domain URL http://node-api.skyablyitsolution.com/wise-lifescience/api/v1 returns 404
-- Need NGINX configuration fix on server side
+#### ✅ NGINX Fix Applied
+- **Issue**: NGINX was proxying `/wise-lifescience/api/v1/` to `http://localhost:3001/` causing double prefix
+- **Solution**: Updated proxy_pass to `http://localhost:3001/api/v1/` to match backend routing
+- **Result**: Domain URL now returns proper API response with updated GitHub repository
 
 ### API Endpoints Verified
 - `GET /api/v1/` - Health check ✅
