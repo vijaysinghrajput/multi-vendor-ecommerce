@@ -32,11 +32,6 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Add request ID for tracking
-    if (config.headers) {
-      config.headers['X-Request-ID'] = generateRequestId();
-    }
-
     return config;
   },
   (error) => {
@@ -142,12 +137,6 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// Helper function to generate request ID
-function generateRequestId(): string {
-  return Math.random().toString(36).substring(2, 15) + 
-         Math.random().toString(36).substring(2, 15);
-}
 
 // Helper function to create form data
 export function createFormData(data: Record<string, any>): FormData {
