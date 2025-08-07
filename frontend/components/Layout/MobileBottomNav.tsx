@@ -57,7 +57,7 @@ const MobileBottomNav = () => {
         if (isAuthenticated) {
           router.push('/profile');
         } else {
-          router.push('/auth/login');
+          router.push('/login/user');
         }
         break;
       default:

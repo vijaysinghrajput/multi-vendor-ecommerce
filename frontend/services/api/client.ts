@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { store } from '../../store';
 import { clearAuth, refreshAccessToken } from '../../store/slices/authSlice';
+import { getCurrentUser, getLoginRoute } from '../../utils/auth';
 import toast from 'react-hot-toast';
 
 // Create axios instance
@@ -71,10 +72,14 @@ apiClient.interceptors.response.use(
           // Refresh failed, clear auth and redirect to login
           store.dispatch(clearAuth());
           
-          // Only show toast if not already on auth pages
-          if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth')) {
+          // Only show toast if not already on login pages
+          if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
             toast.error('Session expired. Please login again.');
-            window.location.href = '/auth/login';
+            
+            // Get current user role to redirect to appropriate login page
+            const currentUser = getCurrentUser();
+            const loginRoute = currentUser ? getLoginRoute(currentUser.role) : '/login/user';
+            window.location.href = loginRoute;
           }
           
           return Promise.reject(refreshError);
@@ -83,9 +88,13 @@ apiClient.interceptors.response.use(
         // No refresh token, clear auth
         store.dispatch(clearAuth());
         
-        if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth')) {
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
           toast.error('Please login to continue.');
-          window.location.href = '/auth/login';
+          
+          // Get current user role to redirect to appropriate login page
+          const currentUser = getCurrentUser();
+          const loginRoute = currentUser ? getLoginRoute(currentUser.role) : '/login/user';
+          window.location.href = loginRoute;
         }
       }
     }

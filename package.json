@@ -4,6 +4,14 @@
   "description": "Multi-vendor e-commerce platform with automated deployment",
   "main": "deploy.js",
   "scripts": {
+    "start:dev": "chmod +x scripts/start-dev.sh && bash scripts/start-dev.sh",
+    "start:development": "npm run start:dev",
+    "start:local": "npm run start:dev",
+    "deploy:server": "chmod +x scripts/deploy-server.sh && bash scripts/deploy-server.sh",
+    "deploy:production": "npm run deploy:server",
+    "deploy:prod": "npm run deploy:server",
+    "sync:db": "chmod +x scripts/sync-db.sh && bash scripts/sync-db.sh",
+    "cleanup": "chmod +x scripts/remove-unused-files.sh && bash scripts/remove-unused-files.sh",
     "deploy": "node deploy.js",
     "deploy:dry-run": "node deploy.js --dry-run",
     "deploy:help": "node deploy.js --help",
@@ -29,7 +37,9 @@
     "db:backup": "node -e \"require('./deploy.js').backupDatabase()\"",
     "db:sync": "node -e \"require('./deploy.js').syncDatabase()\"",
     "github:push": "git add . && git commit -m 'Auto deployment update' && git push",
-    "health:check": "node -e \"const config = require('./deploy.config.js').getConfig(); const url = \\`http://${config.server.host}:${config.server.serverPort}${config.healthCheck.endpoint}\\`; console.log('Testing:', url); require('child_process').exec(\\`curl -f ${url}\\`, (e,s,err) => console.log(e ? 'Failed' : 'Success'));\""
+    "health:check": "node -e \"const config = require('./deploy.config.js').getConfig(); const url = \\`http://${config.server.host}:${config.server.serverPort}${config.healthCheck.endpoint}\\`; console.log('Testing:', url); require('child_process').exec(\\`curl -f ${url}\\`, (e,s,err) => console.log(e ? 'Failed' : 'Success'));\"",
+    "smart": "node smart-commands.js",
+    "cmd": "npm run smart"
   },
   "keywords": [
     "ecommerce",

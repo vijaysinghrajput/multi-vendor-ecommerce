@@ -5,34 +5,18 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MulterModule } from '@nestjs/platform-express';
 
-// Configuration
-import { envValidationSchema } from './config/env.validation';
-import { DatabaseConfig } from './config/database.config';
-
 // Controllers
 import { AppController } from './app.controller';
 
 // Services
 import { AppService } from './app.service';
 
+// Configuration
+import { DatabaseConfig } from './config/database.config';
+
 // Modules
-import { UsersModule } from './modules/users/users.module';
-import { VendorsModule } from './modules/vendors/vendors.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { ReturnsModule } from './modules/returns/returns.module';
-import { ExchangesModule } from './modules/exchanges/exchanges.module';
-import { OrdersModule } from './modules/orders/orders.module';
-import { ProductsModule } from './modules/products/products.module';
-import { CategoriesModule } from './modules/categories/categories.module';
-import { ReviewsModule } from './modules/reviews/reviews.module';
-import { CartModule } from './modules/cart/cart.module';
-import { WishlistModule } from './modules/wishlist/wishlist.module';
-import { AddressModule } from './modules/address/address.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
-import { PaymentsModule } from './modules/payments/payments.module';
-import { AdminModule } from './modules/admin/admin.module';
-import { AnalyticsModule } from './modules/analytics/analytics.module';
-import { CommissionsModule } from './modules/commissions/commissions.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -40,11 +24,6 @@ import { CommissionsModule } from './modules/commissions/commissions.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
-      validationSchema: envValidationSchema,
-      validationOptions: {
-        allowUnknown: true,
-        abortEarly: true,
-      },
     }),
 
     // Database
@@ -72,27 +51,10 @@ import { CommissionsModule } from './modules/commissions/commissions.module';
     }),
 
     // Feature modules
-    AuthModule,
     UsersModule,
-    VendorsModule,
-    ProductsModule,
-    CategoriesModule,
-    ReviewsModule,
-    CartModule,
-    WishlistModule,
-    AddressModule,
-    NotificationsModule,
-    PaymentsModule,
-    OrdersModule,
-    ReturnsModule,
-    ExchangesModule,
-    
-    // Admin modules
-    AdminModule,
-    AnalyticsModule,
-    CommissionsModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DatabaseConfig],
 })
 export class AppModule {}

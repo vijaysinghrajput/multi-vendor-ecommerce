@@ -52,8 +52,7 @@ async function bootstrap() {
     origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Request-ID'],
-    exposedHeaders: ['Content-Length', 'X-Request-ID'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
 
   // API prefix
@@ -78,19 +77,6 @@ async function bootstrap() {
         'JWT-auth',
       )
       .addTag('Authentication', 'User authentication and authorization')
-      .addTag('Users', 'User management')
-      .addTag('Vendors', 'Vendor management')
-      .addTag('Products', 'Product management')
-      .addTag('Categories', 'Category management')
-      .addTag('Cart', 'Shopping cart operations')
-      .addTag('Orders', 'Order management')
-      .addTag('Payments', 'Payment processing')
-      .addTag('Reviews', 'Product reviews and ratings')
-      .addTag('Coupons', 'Coupon and discount management')
-      .addTag('Notifications', 'Notification system')
-      .addTag('Analytics', 'Analytics and tracking')
-      .addTag('Maps', 'Location and mapping services')
-      .addTag('Admin', 'Admin panel operations')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
@@ -107,7 +93,7 @@ async function bootstrap() {
 
   // Start server
   const port = configService.get('PORT') || 3000;
-  const host = configService.get('HOST') || '0.0.0.0'; // Bind to all interfaces for production
+  const host = configService.get('HOST') || '0.0.0.0';
   await app.listen(port, host);
 
   logger.log(`🚀 Application is running on: http://localhost:${port}/${apiPrefix}`);

@@ -82,7 +82,7 @@ const AuthCallback: NextPage = () => {
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
-        router.push('/login');
+        router.push('/login/user');
       }, 3000);
       return () => clearTimeout(timer);
     }

@@ -93,11 +93,11 @@ export class User {
   status: UserStatus;
 
   @ApiProperty({ description: 'Authentication provider', enum: AuthProvider })
-  @Column({ type: 'enum', enum: AuthProvider, default: AuthProvider.LOCAL })
+  @Column({ name: 'auth_provider', type: 'enum', enum: AuthProvider, default: AuthProvider.LOCAL })
   authProvider: AuthProvider;
 
   @ApiProperty({ description: 'External provider ID', required: false })
-  @Column({ nullable: true })
+  @Column({ name: 'provider_id', nullable: true })
   providerId?: string;
 
   @ApiProperty({ description: 'Email verification status' })
@@ -200,12 +200,12 @@ export class User {
 
   @ApiProperty({ description: 'User cart', type: () => Cart })
   @OneToOne(() => Cart, (cart) => cart.user)
-  @JoinColumn()
+  @JoinColumn({ name: 'cartid' })
   cart: Cart;
 
   @ApiProperty({ description: 'User wishlist', type: () => Wishlist })
   @OneToOne(() => Wishlist, (wishlist) => wishlist.user)
-  @JoinColumn()
+  @JoinColumn({ name: 'wishlistid' })
   wishlist: Wishlist;
 
   @ApiProperty({ description: 'User addresses', type: () => [Address] })
